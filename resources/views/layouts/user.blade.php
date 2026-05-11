@@ -19,32 +19,30 @@
 
             {{-- 会員登録画面、ログイン画面はナビケーションバーを表示しない --}}
 
-            @if (Auth::check())
-                <nav class="header-nav">
-                    <ul>
-                        @if ($attendance && $attendance->status === $STATUS_FINISHED)
-                            <li><a href="{{ route('user.attendance.index') }}">今月の出勤一覧</a>
-                            </li>
-                            <li><a href="{{ route('user.application.index') }}">申請一覧</a>
-                            </li>
-                        @else
-                            <li><a href="{{ route('attendance.create') }}">勤怠</a>
-                            </li>
-                            <li> <a href="{{ route('user.attendance.index') }}">勤怠一覧</a>
-                            </li>
-                            <li><a href="{{ route('user.application.index') }}">申請</a>
-                            </li>
-                        @endif
-
-                        <li>
-                            <form action="/logout" method="post">
-                                @csrf
-                                <input class="header-nav__link" type="submit" value="ログアウト">
-                            </form>
+            <nav class="header-nav">
+                <ul>
+                    @if ($attendance && $attendance->status === $STATUS_FINISHED)
+                        <li><a href="{{ route('user.attendance.index') }}">今月の出勤一覧</a>
                         </li>
-                    </ul>
-                </nav>
-            @endif
+                        <li><a href="{{ route('user.application.index') }}">申請一覧</a>
+                        </li>
+                    @else
+                        <li><a href="{{ route('user.attendance.create') }}">勤怠</a>
+                        </li>
+                        <li> <a href="{{ route('user.attendance.index') }}">勤怠一覧</a>
+                        </li>
+                        <li><a href="{{ route('user.application.index') }}">申請</a>
+                        </li>
+                    @endif
+
+                    <li>
+                        <form action="/logout" method="post">
+                            @csrf
+                            <input class="header-nav__link" type="submit" value="ログアウト">
+                        </form>
+                    </li>
+                </ul>
+            </nav>
         </header>
         <div class="content">
             @yield('content')

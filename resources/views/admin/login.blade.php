@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    < class="login-form">
+    <div class="login-form">
         <h1 class="login-form__heading content__heading">管理者ログイン</h1>
 
         <form class="login-form__form" action="/admin/login" method="post" novalidate>
@@ -29,5 +29,5 @@
 
             <button class="login-form__btn btn">管理者ログインする</button>
         </form>
-        </div>
-    @endsection
+    </div>
+@endsection

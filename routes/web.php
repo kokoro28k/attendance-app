@@ -20,11 +20,11 @@ use App\Http\Controllers\AdminLoginController;
 // 管理者
 Route::get('/admin/login',[AdminLoginController::class,'create'])->name('admin.login');
 
-Route::get('/admin/attendance/list',[AttendanceController::class,'index'])->name('admin.attendance.index');
-Route::get('/admin/staff/list',[AttendanceController::class,'index'])->name('staff.index');
+Route::get('/admin/attendance/list',[AdminAttendanceController::class,'index'])->name('admin.attendance.index');
+Route::get('/admin/staff/list',[AdminAttendanceController::class,'index'])->name('staff.index');
 
 Route::middleware(['is_admin'])->group(function () {
-Route::get('/stamp_correction_request/list',[ApplicationController::class,'index'])->name('admin.application');
+Route::get('/stamp_correction_request/list',[AdminApplicationController::class,'index'])->name('admin.application');
 });
 
 // 一般ユーザー
@@ -38,4 +38,5 @@ Route::post('/attendance/break-start',[AttendanceController::class,'breakS</S>ta
 Route::post('/attendance/break-end',[AttendanceController::class,'breakEnd'])->name('user.break.end');
 
 Route::get('/attendance/list',[AttendanceController::class,'index'])->name('user.attendance.index');
+Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])->name('user.attendance.show');
 Route::get('/stamp_correction_request/list',[ApplicationController::class,'index'])->name('user.application.index');

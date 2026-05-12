@@ -48,4 +48,37 @@ class Attendance extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    public function getBreakTotalMinutesAttribute()
+    {  
+        $totalMinutes = 0;
+
+        foreach ($this->breakTimes as $break) {
+            if ($break->break_start && $break->break_end) {
+            $totalMinutes += \Carbon\Carbon::parse($break->break_start)
+                ->diffInMinutes(\Carbon\Carbon::parse($break->break_end));
+            }
+        }
+
+        return $totalMinutes;
+    }
+
+    public function getBreakTotalHmAttribute()
+    {
+        $totalMinutes = $this->break_total_minutes;
+
+        return sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
+    }
+
+    public function getWorkMinutesAttribute()
+    {
+        if (!$this->work_start || !$this->work_end) {
+        return 0;
+        }
+
+        $workMinutes = \Carbon\Carbon::parse($this->work_start)
+        ->diffInMinutes(\Carbon\Carbon::parse($this->work_end));
+
+        return $workMinutes - $this->break_total_minutes;
+    }
 }

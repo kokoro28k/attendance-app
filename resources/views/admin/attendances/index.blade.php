@@ -50,7 +50,7 @@
                         <td class="attendance-data">{{ $attendance->break_total_hm }}</td>
                         <td class="attendance-data">{{ $attendance->work_minutes }}</td>
                         <td class="attendance-data__detail">
-                            <a class="detail" href="{{ route('admin.attendance.show', $attendance->id) }}">詳細</a>
+                            <a class="detail" href="{{ route('admin.attendance.show') }}">詳細</a>
                         </td>
                     </tr>
                 @endforeach

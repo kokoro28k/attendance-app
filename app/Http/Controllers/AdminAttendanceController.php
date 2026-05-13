@@ -37,4 +37,21 @@ class AdminAttendanceController extends Controller
 
         return view('admin.staff.index',compact('users'));
     }
+
+    public function staffAttendanceIndex(Request $request, $id)
+    {
+
+        $user = User::where('role', User::ROLE_USER)->findOrFail($id);
+
+        $yearMonth = $request->input('year_month', Carbon::now()->format('Y-m'));
+
+        $targetDate = Carbon::parse($yearMonth . '-01');
+
+        $prevMonth = $targetDate->copy()->subMonth()->format('Y-m');
+        $nextMonth = $targetDate->copy()->addMonth()->format('Y-m');
+
+        $attendances = Attendance::with(['breakTimes'])->where('user_id',$id)->whereYear('date',$targetDate->year)->whereMonth('date', $targetDate->month)->orderBy('date')->get();
+
+        return view('admin.staff.attendance-index',compact('targetDate','prevMonth','nextMonth','attendances','user'));
+    }
 }

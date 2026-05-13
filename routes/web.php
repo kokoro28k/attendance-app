@@ -6,6 +6,8 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\AdminApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +23,13 @@ use App\Http\Controllers\AdminLoginController;
 Route::get('/admin/login',[AdminLoginController::class,'create'])->name('admin.login');
 
 Route::get('/admin/attendance/list',[AdminAttendanceController::class,'index'])->name('admin.attendance.index');
-Route::get('/admin/staff/list',[AdminAttendanceController::class,'index'])->name('staff.index');
+Route::get('/admin//stamp_correction_request/list',[AdminApplicationController::class,'index'])->name('admin.application.list');
+Route::get('/admin/staff/list',[AdminAttendanceController::class,'staffIndex'])->name('staff.index');
+Route::get('/admin/attendance/staff/{id}',[AdminAttendanceController::class,'staffAttendanceIndex'])->name('staff.attendance');
 
-Route::middleware(['is_admin'])->group(function () {
-Route::get('/stamp_correction_request/list',[AdminApplicationController::class,'index'])->name('admin.application');
-});
+Route::get('/admin/attendance/{id}',[AdminAttendanceController::class,'show'])->name('admin.attendance.show');
+
+
 
 // 一般ユーザー
 Route::get('/register',[RegisterController::class,'create'])->name('user.register');

@@ -1,0 +1,94 @@
+.attendance-index {
+    background-color: #f0eff2;
+    min-height: 100vh;
+}
+
+.attendance-index__inner {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+.index-heading {
+    padding: 0 10px;
+    border-left: 5px solid #000;
+}
+
+.month-navigation {
+    background-color: #fff;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.month-navigation__before {
+    gap: 10px;
+    display: flex;
+    padding: 0 10px;
+}
+
+.month-navigation__arrow {
+    color: #b3b3b3;
+    font-size: 20px;
+}
+
+.month-button {
+    color: #757575;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.month-button:hover,
+.nmonth-button:active,
+.month-button:visited {
+    color: #757575;
+}
+
+.month-navigation__icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 8px;
+}
+
+.month-navigation__after {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 0 10px;
+}
+
+.current-month {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.attendace-table {
+    margin-top: 16px;
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    background-color: #fff;
+}
+
+.attendance-row {
+    border: 1px solid #b3b3b3;
+}
+
+.attendance-label,
+.attendance-data {
+    color: #757575;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.attendance-data__detail {
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}

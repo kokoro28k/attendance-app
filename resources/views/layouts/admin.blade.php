@@ -17,26 +17,24 @@
                 <img src="{{ asset('images/COACHTECHヘッダーロゴ.png') }}" alt="COACHTECH">
             </div>
 
-            {{-- ログイン画面はナビケーションバーを表示しない --}}
-
-            @if (Auth::check())
-                <nav class="header-nav">
-                    <ul>
-                        <li><a href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
-                        </li>
-                        <li> <a href="{{ route('staff.index') }}">スタッフ一覧</a>
-                        </li>
-                        <li><a href="{{ route('admin.application.list') }}">申請一覧</a>
-                        </li>
-                        <li>
-                            <form action="/logout" method="post">
-                                @csrf
-                                <input class="header__logout" type="submit" value="ログアウト">
-                            </form>
-                        </li>
-                    </ul>
-                </nav>
-            @endif
+            {{-- @if (!Route::is('admin.login')) --}}
+            <nav class="header-nav">
+                <ul>
+                    <li><a href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
+                    </li>
+                    <li> <a href="{{ route('staff.index') }}">スタッフ一覧</a>
+                    </li>
+                    <li><a href="{{ route('admin.application.list') }}">申請一覧</a>
+                    </li>
+                    <li>
+                        <form action="/logout" method="post">
+                            @csrf
+                            <input class="header-nav__link" type="submit" value="ログアウト">
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+            {{-- @endif --}}
         </header>
         <div class="content">
             @yield('content')

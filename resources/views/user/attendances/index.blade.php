@@ -42,20 +42,23 @@
                     <th class="attendance-label">合計</th>
                     <th class="attendance-label">詳細</th>
                 </tr>
-                @foreach ($attendances as $attendance)
+                @foreach ($rows as $row)
                     <tr class="attendance-row">
-                        <td class="attendance-data">{{ $attendance->date->format('m/d(D)') }}</td>
-                        <td class="attendance-data">{{ $attendance->work_start }}</td>
-                        <td class="attendance-data">{{ $attendance->work_end }}</td>
-                        <td class="attendance-data">{{ $attendance->break_total_hm }}</td>
-                        <td class="attendance-data">{{ $attendance->work_minutes }}</td>
+                        <td class="attendance-data">{{ $row['date']->format('m/d(D)') }}</td>
+                        <td class="attendance-data">{{ optional($row['attendance'])->work_start }}</td>
+                        <td class="attendance-data">{{ optional($row['attendance'])->work_end }}</td>
+                        <td class="attendance-data">{{ optional($row['attendance'])->break_total_hm }}</td>
+                        <td class="attendance-data">{{ optional($row['attendance'])->work_minutes }}</td>
                         <td class="attendance-data__detail">
-                            <a class="detail" href="{{ route('user.attendance.show') }}">詳細</a>
+                            <a class="detail"
+                                href="{{ route('user.attendance.show', [
+                                    'date' => $row['date']->format('Y-m-d'),
+                                    'attenance' => oprional($row['attendance'])->id,
+                                ]) }}">詳細</a>
                         </td>
                     </tr>
                 @endforeach
             </table>
-
         </div>
     </div>
 @endsection

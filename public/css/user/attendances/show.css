@@ -1,0 +1,79 @@
+.attendance-detail {
+    background-color: #f0eff2;
+    min-height: 100vh;
+}
+
+.attendance-detail__inner {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+.detail-heading {
+    padding: 0 10px;
+    border-left: 5px solid #000;
+}
+
+.detail-table {
+    margin-top: 16px;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #b3b3b3;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.detail-row {
+    border: 1px solid #b3b3b3;
+    padding: 20px ;
+    align-items: center;
+}
+
+.detail-label {
+    color: #757575;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.detail-data{
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.data-row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.reason{
+    font-size: 18px;
+    font-weight: bold;
+}
+.error-message{
+    color: red;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.application-button{
+    background-color: black;
+    color: #fff;
+    cursor: pointer;
+    font-size: 24px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    display: block;
+}
+
+.pending-message{
+    color: #f77879;
+    font-weight: bold;
+    font-size: 20px;
+}

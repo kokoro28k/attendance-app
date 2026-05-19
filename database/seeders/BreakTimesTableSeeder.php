@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\BreakTime;
+use App\Models\Attendance;
 
 class BreakTimesTableSeeder extends Seeder
 {
@@ -12,6 +14,34 @@ class BreakTimesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $attendances = Attendance::all();
+
+        foreach ($attendances as $attendance) {
+
+            // user1 
+            if ($attendance->user_id === 1) {
+                BreakTime::create([
+                    'attendance_id' => $attendance->id,
+                    'break_start' => '12:00:00',
+                    'break_end' => '13:00:00'
+                ]);
+            }
+
+            // user2　休憩が二回の場合
+            if ($attendance->user_id === 2) {
+
+                BreakTime::create([
+                    'attendance_id' => $attendance->id,
+                    'break_start' => '12:00:00',
+                    'break_end' => '12:30:00'
+                ]);
+
+                BreakTime::create([
+                    'attendance_id' => $attendance->id,
+                    'break_start' => '15:00:00',
+                    'break_end' => '15:30:00'
+                ]);
+            }
+        }
     }
 }

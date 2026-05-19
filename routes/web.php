@@ -43,8 +43,9 @@ Route::get('/login',[LoginController::class,'create'])->name('user.login');
 Route::get('/attendance',[AttendanceController::class,'create'])->name('user.attendance.create');
 Route::post('/attendance/start',[AttendanceController::class,'start'])->name('user.attendance.start');
 Route::post('/attendance/end',[AttendanceController::class,'end'])->name('user.attendance.end');
-Route::post('/attendance/break-start',[AttendanceController::class,'breakS</S>tart'])->name('user.break.start');
+Route::post('/attendance/break-start',[AttendanceController::class,'breakStart'])->name('user.break.start');
 Route::post('/attendance/break-end',[AttendanceController::class,'breakEnd'])->name('user.break.end');
+Route::post('/applications',[ApplicationController::class,'store'])->name('user.application.store');
 
 Route::get('/attendance/list',[AttendanceController::class,'index'])->name('user.attendance.index');
 Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])->name('user.attendance.show');

@@ -8,24 +8,24 @@
     <div class="attendance-index">
         <div class="attendance-index__inner">
             <h1 class="index-heading"> {{ $targetDate->format('Y年n月j日の勤怠') }}</h1>
-            {{-- 前月・翌月ナビゲーション --}}
-            <div class="month-navigation">
-                <div class="month-navigation__before">
-                    <span class="month-navigation__arrow">←</span>
-                    <a href="{{ route('admin.attendance.index', ['month' => $prevMonth]) }}" class="month-button">前月
+            {{-- 前日・翌日ナビゲーション --}}
+            <div class="date-navigation">
+                <div class="date-navigation__before">
+                    <span class="date-navigation__arrow">←</span>
+                    <a href="{{ route('admin.attendance.index', ['date' => $prevDate]) }}" class="date-button">前日
                     </a>
                 </div>
 
-                <div class="month-navigation__calender">
+                <div class="date-navigation__calender">
                     <img src="{{ asset('images/カレンダーアイコン8.png') }}" class="month-navigation__icon" alt="カレンダー">
                     <span class="current-month">
-                        {{ $targetDate->format('Y/m') }}
+                        {{ $targetDate->format('Y/m/d') }}
                     </span>
                 </div>
 
-                <div class="month-navigation__after">
-                    <span class="month-navigation__arrow">→</span>
-                    <a href="{{ route('admin.attendance.index', ['month' => $nextMonth]) }}" class="month-button">翌月
+                <div class="date-navigation__after">
+                    <span class="date-navigation__arrow">→</span>
+                    <a href="{{ route('admin.attendance.index', ['date' => $nextDate]) }}" class="date-button">翌日
                     </a>
 
                 </div>

@@ -68,6 +68,30 @@
                         </tr>
                         @endforeach
 
+                        {{-- 空欄の休憩欄 --}}
+                        @php
+                            $emptyIndex = $attendance->breakTimes->count();
+                        @endphp
+
+                        <tr class="detail-row">
+                            <th class="detail-label">休憩{{ $emptyIndex + 1 }}</th>
+                            <td class="detail-data">
+                                <div class="break-time">
+                                    <input type="time" name="break_start[]" value=""
+                                        {{ $isPending ? 'disabled' : '' }}>
+                                    <span class="time-separator">～</span>
+                                    <input type="time" name="break_end[]" value=""
+                                        {{ $isPending ? 'disabled' : '' }}>
+                                </div>
+                                @error('break_start.' . $emptyIndex)
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                                @error('break_end.' . $emptyIndex)
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                            </td>
+                        </tr>
+
                         <tr class="detail-row">
                             <th class="detail-label">備考</th>
                             <td>

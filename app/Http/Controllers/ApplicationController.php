@@ -11,7 +11,6 @@ class ApplicationController extends Controller
 {
     public function index(Request $request)
     {
-
         $tab = $request->query('tab','pending');
      
         $query = Application::with(['attendance'])->where('user_id',auth()->id());

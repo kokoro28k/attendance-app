@@ -53,7 +53,7 @@
                             <a class="detail"
                                 href="{{ route('user.attendance.show', [
                                     'date' => $row['date']->format('Y-m-d'),
-                                    'attenance' => oprional($row['attendance'])->id,
+                                    'attenance' => optional($row['attendance'])->id,
                                 ]) }}">詳細</a>
                         </td>
                     </tr>

@@ -9,19 +9,17 @@ use App\Models\User;
 
 class AdminAttendanceController extends Controller
 {
+    // 勤怠一覧画面の表示
     public function index(Request $request)
     {
-        $yearMonth = $request->input('year_month', Carbon::now()->format('Y-m'));
-
-        $targetDate = Carbon::parse($yearMonth . '-01');
-
-        $prevMonth = $targetDate->copy()->subMonth()->format('Y-m');
-        $nextMonth = $targetDate->copy()->addMonth()->format('Y-m');
+        $targetDate = Carbon::today(); 
 
         $attendances = Attendance::with(['user','breakTimes'])
-        ->whereYear('date', $targetDate->year)->whereMonth('date', $targetDate->month)->orderBy('user_id')->orderBy('date')->get();
+            ->whereDate('date', $targetDate)
+            ->orderBy('user_id')
+            ->get();
 
-        return view('admin.attendances.index',compact('attendances','targetDate','prevMonth','nextMonth'));
+        return view('admin.attendances.index',compact('targetDate','attendances'));
     }
 
     public function show($id)
@@ -40,7 +38,6 @@ class AdminAttendanceController extends Controller
 
     public function staffAttendanceIndex(Request $request, $id)
     {
-
         $user = User::where('role', User::ROLE_USER)->findOrFail($id);
 
         $yearMonth = $request->input('year_month', Carbon::now()->format('Y-m'));
@@ -50,8 +47,33 @@ class AdminAttendanceController extends Controller
         $prevMonth = $targetDate->copy()->subMonth()->format('Y-m');
         $nextMonth = $targetDate->copy()->addMonth()->format('Y-m');
 
-        $attendances = Attendance::with(['breakTimes'])->where('user_id',$id)->whereYear('date',$targetDate->year)->whereMonth('date', $targetDate->month)->orderBy('date')->get();
+        // 月初め、月末を作る
+        $start = $targetDate->copy()->startOfMonth();
+        $end = $targetDate->copy()->endOfMonth();
 
-        return view('admin.staff.attendance-index',compact('targetDate','prevMonth','nextMonth','attendances','user'));
+        // １ヶ月の日付けを作る
+        $dates = [];
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()){
+            $dates[] = $date->copy();
+        }
+
+        // 勤怠データを取得する　
+        $attendances = Attendance::with('breakTimes')
+            ->where('user_id',$id)
+            ->whereBetween('date', [$start, $end])
+            ->get()
+            ->keyBy('date');
+
+        // ユーザーごとに rows　を作る
+        $rows = [];
+        foreach ($dates as $date) {
+            $dateKey = $date->format('Y-m-d');
+            $rows[$userId][] = [
+                'date' => $date,
+                'attendance' => $userAttendances[$dateKey] ?? null,
+            ];
+        }
+
+        return view('admin.staff.attendance-index',compact('rows','targetDate','prevMonth','nextMonth','attendances','user'));
     }
 }

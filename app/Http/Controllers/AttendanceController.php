@@ -48,7 +48,10 @@ class AttendanceController extends Controller
         }
 
         // 勤怠データを取得する　キーを日付にする
-        $attendances = Attendance::where('user_id',auth()->id())->whereBetween('date', [$start,$end])->with('breakTimes')->get()->keyBy('date');
+        $attendances = Attendance::where('user_id',auth()->id())
+            ->whereBetween('date', [$start,$end])->with('breakTimes')
+            ->get()
+            ->keyBy('date');
 
         // 日付ことに勤怠または、勤怠なしを作る
         $rows = [];
@@ -67,12 +70,16 @@ class AttendanceController extends Controller
     public function show($id)
     {
         // 本人の勤怠データを取得
-        $attendance = Attendance::where('id',$id)->where('user_id',auth()->id())->with('breakTImes')->firstOrFail();
+        $attendance = Attendance::where('id',$id)    
+            ->where('user_id',auth()->id())
+            ->with('breakTImes')->firstOrFail();
 
         $year = $attendance->date->format('Y年');
         $monthDay = $attendance->date->format('n月j日');
 
-        $isPending = Application::where('attendance_id',$attendance->id)->where('status','pending')->exists();
+        $isPending = Application::where('attendance_id',$attendance->id)
+            ->where('status','pending')
+            ->exists();
 
         return view('user.attendaces.show',compact('attendace','year','monthDay','isPending'));
     }

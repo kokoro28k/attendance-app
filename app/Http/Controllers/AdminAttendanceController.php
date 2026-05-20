@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Http\Request\AttendanceRequest;
 
 class AdminAttendanceController extends Controller
 {
@@ -78,5 +79,28 @@ class AdminAttendanceController extends Controller
         }
 
         return view('admin.staff.attendance-index',compact('rows','targetDate','prevMonth','nextMonth','attendances','user'));
+    }
+
+    public function update(AttendanceRequest $request,$id)
+    {
+        $attendance = Attendance::with('breakTimes')->findOrFail($id);
+
+        $validated = $request->validated();
+
+        $attendance->update([
+            'work_start' => $validated['work_start'],
+            'work_end' => $validated['work_end'],
+            'reason' => $validated['reason'],
+        ]);
+
+        foreach ($attendance->breakTimes as $index => $break) {
+            $break->update([
+                'break_start' => $validated['break_start'][$index],
+                'break_end' => $validated['break_end'][$index],
+            ]);
+        }
+
+        // 日別勤怠一覧にリダイレクトする？（要確認）
+        return redirect()->route('admin.attendance.index');
     }
 }

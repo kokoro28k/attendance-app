@@ -29,6 +29,10 @@ Route::get('/admin/attendance/staff/{id}',[AdminAttendanceController::class,'sta
 
 Route::get('/admin/attendance/{id}',[AdminAttendanceController::class,'show'])->name('admin.attendance.show');
 
+Route::put('/admin/attendance/{id}',[
+   AdminAttendanceController::class,'update'
+])->name('admin.attendance.update');
+
 Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'showApprove'])->name('admin.application.approve.show');
 
 // Route::middleware('auth','role:admin')->group(function(){

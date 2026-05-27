@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminApplicationController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,41 +20,97 @@ use App\Http\Controllers\AdminApplicationController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 // 管理者
-Route::get('/admin/login',[AdminLoginController::class,'create'])->name('admin.login');
+Route::get('/admin/login',[AdminLoginController::class,'create'])
+    ->middleware('guest')
+    ->name('admin.login');
 
-Route::get('/admin/attendance/list',[AdminAttendanceController::class,'index'])->name('admin.attendance.index');
+Route::post('/admin/login',[AdminLoginController::class,'store'])
+    ->name('admin.login.store');
 
-Route::get('/admin/staff/list',[AdminAttendanceController::class,'staffIndex'])->name('staff.index');
-Route::get('/admin/attendance/staff/{id}',[AdminAttendanceController::class,'staffAttendanceIndex'])->name('staff.attendance');
+Route::post('/admin/logout',[AdminLoginController::class,'destroy'])
+    ->name('admin.logout');
 
-Route::get('/admin/attendance/{id}',[AdminAttendanceController::class,'show'])->name('admin.attendance.show');
+// 管理者ログイン済みのみアクセス可能
+Route::middleware(['auth:admin','admin'])->group(function () {
+    // 申請一覧画面
+    Route::get('/admin/stamp_correction_request/list',[AdminApplicationController::class,'index'])
+        ->name('admin.application.list');
 
-Route::put('/admin/attendance/{id}',[
-   AdminAttendanceController::class,'update'
-])->name('admin.attendance.update');
+    // 修正申請承認
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'showApprove'])        
+        ->name('admin.application.approve.show');
 
-Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'showApprove'])->name('admin.application.approve.show');
+    // スタッフ一覧
+    Route::get('/admin/staff/list',[AdminAttendanceController::class,'staffIndex'])
+        ->name('staff.index');
 
-// Route::middleware('auth','role:admin')->group(function(){
-   // Route::get('/stamp_correction_request/list',[AdminApplicationController::class,'index'])->name('admin.application.list');
-// }); 
+    // 勤怠一覧
+    Route::get('/admin/attendance/list',[AdminAttendanceController::class,'index'])
+        ->name('admin.attendance.index');
 
+    // スタッフ別勤怠一覧
+    Route::get('/admin/attendance/staff/{id}',[AdminAttendanceController::class,'staffAttendanceIndex'])
+        ->name('staff.attendance');
+
+    // 勤怠詳細
+    Route::get('/admin/attendance/{id}',[AdminAttendanceController::class,'show'])
+        ->name('admin.attendance.show');
+
+    //　勤怠詳細修正
+    Route::put('/admin/attendance/{id}',[AdminAttendanceController::class,'update'
+    ])
+        ->name('admin.attendance.update');
+
+});
 
 // 一般ユーザー
-Route::get('/register',[RegisterController::class,'create'])->name('user.register');
-Route::get('/login',[LoginController::class,'create'])->name('user.login');
+Route::middleware('guest')->group(function () {
+    Route::get('/register',[RegisterController::class,'create'])
+        ->name('user.register');
 
-Route::get('/attendance',[AttendanceController::class,'create'])->name('user.attendance.create');
-Route::post('/attendance/start',[AttendanceController::class,'start'])->name('user.attendance.start');
-Route::post('/attendance/end',[AttendanceController::class,'end'])->name('user.attendance.end');
-Route::post('/attendance/break-start',[AttendanceController::class,'breakStart'])->name('user.break.start');
-Route::post('/attendance/break-end',[AttendanceController::class,'breakEnd'])->name('user.break.end');
-Route::post('/applications',[ApplicationController::class,'store'])->name('user.application.store');
+    Route::post('/register',[RegisterController::class,'store'])
+        ->name('register');
 
-Route::get('/attendance/list',[AttendanceController::class,'index'])->name('user.attendance.index');
-Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])->name('user.attendance.show');
+    Route::get('/login',[LoginController::class,'create'])
+        ->name('user.login');
 
-Route::get('/stamp_correction_request/list',[ApplicationController::class,'index'])->name('user.application.index');
+    Route::post('/login',[LoginController::class,'store'])
+        ->name('login');
+});
+
+Route::middleware(['auth','user'])->group(function () {
+    
+    Route::get('/attendance',[AttendanceController::class,'create'])
+        ->name('user.attendance.create');
+
+    Route::post('/attendance/start',[AttendanceController::class,'start'])
+        ->name('user.attendance.start');
+
+    Route::post('/attendance/end',[AttendanceController::class,'end'])
+        ->name('user.attendance.end');
+
+    Route::post('/attendance/break-start',[AttendanceController::class,'breakStart'])
+        ->name('user.break.start');
+
+    Route::post('/attendance/break-end',[AttendanceController::class,'breakEnd'])
+        ->name('user.break.end');
+
+    Route::post('/applications',[ApplicationController::class,'store'])
+        ->name('user.application.store');
+
+    Route::get('/attendance/list',[AttendanceController::class,'index'])
+        ->name('user.attendance.index');
+
+    Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])
+        ->name('user.attendance.show');
+
+    Route::get('/stamp_correction_request/list',[ApplicationController::class,'index'])
+        ->name('user.application.index');
+
+    Route::post('/logout',[LoginController::class,'destroy'])
+        ->name('logout');
+});
 
 

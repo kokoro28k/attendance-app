@@ -7,7 +7,7 @@
 @section('content')
     <div class="attendance-index">
         <div class="attendance-index__inner">
-            <h1 class="index-heading"> {{ $targetDate->format('Y年n月j日の勤怠') }}</h1>
+            <h1 class="index-heading"> {{ \Carbon\Carbon::parse($targetDate)->format('Y年n月j日の勤怠') }}</h1>
             {{-- 前日・翌日ナビゲーション --}}
             <div class="date-navigation">
                 <div class="date-navigation__before">
@@ -19,7 +19,7 @@
                 <div class="date-navigation__calender">
                     <img src="{{ asset('images/カレンダーアイコン8.png') }}" class="month-navigation__icon" alt="カレンダー">
                     <span class="current-month">
-                        {{ $targetDate->format('Y/m/d') }}
+                        {{ \Carbon\Carbon::parse($targetDate)->format('Y/m/d') }}
                     </span>
                 </div>
 

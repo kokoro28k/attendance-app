@@ -18,13 +18,13 @@ class AttendancesTableSeeder extends Seeder
         $prev = Carbon::now()->subMonth();
         $now = Carbon::now();
 
-        // user1
-        $this->generateMonth($prev, 1, 'patternA');
-        $this->generateMonth($now, 1, 'patternA');
-
         // user2
-        $this->generateMonth($prev, 2, 'patternB');
-        $this->generateMonth($now, 2, 'patternB');
+        $this->generateMonth($prev, 2, 'patternA');
+        $this->generateMonth($now, 2, 'patternA');
+
+        // user3
+        $this->generateMonth($prev, 3, 'patternB');
+        $this->generateMonth($now, 3, 'patternB');
     }
 
     private function generateMonth(Carbon $carbon, int $userId, string $pattern)

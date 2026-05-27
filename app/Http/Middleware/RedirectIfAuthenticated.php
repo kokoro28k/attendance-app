@@ -17,6 +17,11 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
+        // 管理者ログイン画面は除外する
+        if ($request->routeIs('admin.login')) {
+            return $next($request);
+        }
+        
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {

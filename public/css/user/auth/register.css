@@ -7,7 +7,7 @@
 
 .register-form__form {
     padding: 30px 10px;
-    width: 60%;
+    width: 70%;
     margin: 0 auto;
 }
 
@@ -19,17 +19,17 @@
 .register-form__label {
     display: block;
     margin-bottom: 8px;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
 }
 
 .register-form__input {
     padding: 8px 12px;
     width: 100%;
-    height: 54px;
+    height: 60px;
     border: 2px solid #000;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .register-form__error-message {
@@ -39,8 +39,8 @@
 .register-form__btn {
     margin: 80px auto 0;
     width: 100%;
-    padding: 8px 12px;
-    height: 48px;
+    padding: 20px 12px;
+    height: 70px;
 }
 
 .register-form__link{
@@ -49,6 +49,7 @@
     text-decoration: none;
     margin-bottom: 50px;
     color: #3b82f6;
+    font-size: 22px;
 }
 
 

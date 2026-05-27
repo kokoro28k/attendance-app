@@ -8,7 +8,7 @@
     <div class="register-form">
         <h1 class="register-form__heading content__heading">会員登録</h1>
 
-        <form class="register-form__form" action="/register" method="post" novalidate>
+        <form class="register-form__form" action="/register" method="post">
             @csrf
 
             <div class="register-form__group">
@@ -41,7 +41,7 @@
                     <p class="register-form__error-message">{{ $message }}</p>
                 @enderror
             </div>
-            <button class="register-form__btn btn">登録する</button>
+            <button class="register-form__btn btn" type="submit">登録する</button>
         </form>
 
         <a class="register-form__link" href="/login">ログインはこちら</a>

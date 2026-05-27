@@ -10,7 +10,6 @@ class AdminApplicationController extends Controller
 {
     public function index(Request $request)
     {
-
         $tab = $request->query('tab','pending');
      
         $query = Application::with(['user','attendance']);
@@ -18,7 +17,7 @@ class AdminApplicationController extends Controller
         if ($tab === 'pending') {
             $query->where('status','pending')->orderBy('applied_at','asc');
         } elseif ($tab === 'approved') {
-            $query->where('status','approved')->ordeBy('applied_at','desc');
+            $query->where('status','approved')->orderBy('applied_at','desc');
         }
 
         $applications = $query->orderBy('user_id')->get();

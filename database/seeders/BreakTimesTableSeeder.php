@@ -18,8 +18,8 @@ class BreakTimesTableSeeder extends Seeder
 
         foreach ($attendances as $attendance) {
 
-            // user1 
-            if ($attendance->user_id === 1) {
+            // user2
+            if ($attendance->user_id === 2) {
                 BreakTime::create([
                     'attendance_id' => $attendance->id,
                     'break_start' => '12:00:00',
@@ -27,8 +27,8 @@ class BreakTimesTableSeeder extends Seeder
                 ]);
             }
 
-            // user2　休憩が二回の場合
-            if ($attendance->user_id === 2) {
+            // user3　休憩が二回の場合
+            if ($attendance->user_id === 3) {
 
                 BreakTime::create([
                     'attendance_id' => $attendance->id,

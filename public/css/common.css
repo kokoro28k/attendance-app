@@ -75,12 +75,14 @@ body {
     background: transparent;
     color: #fff;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
 }
 
 .content__heading{
     margin: 0 auto;
+    padding: 20px 0;
+    font-size: 40px;
 }
 
 /* ボタン */
@@ -91,9 +93,10 @@ body {
     border-radius: 5px;
     background-color: black;
     color: #FFF;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: bold;
     cursor: pointer;
+    
 }
 
 .button{

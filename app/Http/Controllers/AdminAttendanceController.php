@@ -13,17 +13,24 @@ class AdminAttendanceController extends Controller
     // 勤怠一覧画面の表示
     public function index(Request $request)
     {
-        $targetDate = Carbon::parse($request->input('date', Carbon::today()));
+        $targetDateString = $request->input('date', Carbon::today()->toDateString());
 
-        $prevDate = $targetDate->copy()->subDay()->format('Y-m-d');
-        $nextDate = $targetDate->copy()->addDay()->format('Y-m-d');
+        $targetDate = Carbon::parse($targetDateString);
+
+        $prevDate = $targetDate->copy()->subDay()->toDateString();
+        $nextDate = $targetDate->copy()->addDay()->toDateString();
 
         $attendances = Attendance::with(['user','breakTimes'])
-            ->whereDate('date', $targetDate)
+            ->whereDate('date', $targetDateString)
             ->orderBy('user_id')
             ->get();
 
-        return view('admin.attendances.index',compact('targetDate','attendances','prevDate','nextDate'));
+        return view('admin.attendances.index',[
+            'targetDate' => $targetDateString,
+            'attendances' => $attendances,
+            'prevDate' => $prevDate,
+            'nextDate' => $nextDate,
+        ]);
     }
 
     public function show($id)

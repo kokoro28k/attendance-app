@@ -81,21 +81,24 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth','user'])->group(function () {
-    
+
+    // 勤怠登録画面
     Route::get('/attendance',[AttendanceController::class,'create'])
         ->name('user.attendance.create');
 
+    // 勤怠登録画面 出勤処理
     Route::post('/attendance/start',[AttendanceController::class,'start'])
         ->name('user.attendance.start');
 
     Route::post('/attendance/end',[AttendanceController::class,'end'])
         ->name('user.attendance.end');
 
-    Route::post('/attendance/break-start',[AttendanceController::class,'breakStart'])
+    Route::post('/attendance/break/start',[AttendanceController::class,'startBreak'])
         ->name('user.break.start');
 
-    Route::post('/attendance/break-end',[AttendanceController::class,'breakEnd'])
+    Route::post('/attendance/break/end',[AttendanceController::class,'endBreak'])
         ->name('user.break.end');
+
 
     Route::post('/applications',[ApplicationController::class,'store'])
         ->name('user.application.store');

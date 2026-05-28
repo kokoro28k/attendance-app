@@ -52,8 +52,8 @@
                         <td class="attendance-data__detail">
                             <a class="detail"
                                 href="{{ route('user.attendance.show', [
-                                    'date' => $row['date']->format('Y-m-d'),
-                                    'attenance' => optional($row['attendance'])->id,
+                                    ->format('Y-m-d'),
+                                    'attendance' => optional($row['attendance'])->id,
                                 ]) }}">詳細</a>
                         </td>
                     </tr>

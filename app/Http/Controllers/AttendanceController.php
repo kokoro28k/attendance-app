@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BreakTime;
 
 class AttendanceController extends Controller
 {
-    // 勤怠登録
+    // 勤怠登録 画面の表示
     public function create()
     {
         Carbon::setlocale('ja');
@@ -25,7 +26,114 @@ class AttendanceController extends Controller
             'formattedDate' => $formattedDate,
             'formattedTime' => $formattedTime,
             'attendance' => $attendance,
+            'STATUS_OFF' => Attendance::STATUS_OFF,
+            'STATUS_WORKING' => Attendance::STATUS_WORKING,
+            'STATUS_BREAK' => Attendance::STATUS_BREAK,
+            'STATUS_FINISHED' => Attendance::STATUS_FINISHED,
         ]);
+    }
+
+    // 勤怠登録 出勤
+    public function start(Request $request)
+   {
+        $today = Carbon::today();
+
+        // 今日の勤怠がすでにあるなら出勤済み扱い
+        $attendance = Attendance::where('user_id',auth()->id())
+            ->whereDate('date', $today)
+            ->first();
+        
+        if ($attendance) {
+            return redirect()->route('user.attendance.create');
+        }
+
+        // 出勤レコードを作成
+        Attendance::create([
+            'user_id' => auth()->id(),
+            'date' => $today,
+            'work_start' => Carbon::now(),
+            'status' => Attendance::STATUS_WORKING,
+        ]);
+
+        return redirect()->route('user.attendance.create');
+    } 
+
+    // 勤怠登録　休憩入り
+    public function startBreak()
+    {
+        $attendance = Attendance::where('user_id', auth()->id())
+            ->whereDate('date',today())
+            ->first();
+
+        // 出勤中ではないなら、休憩入りできない
+        if (!$attendance  || $attendance->status !== Attendance::STATUS_WORKING) {
+            return back();
+        }
+
+        // statusを休憩中に変更
+        $attendance->status = Attendance::STATUS_BREAK;
+        $attendance->save();
+
+        // Break_timesテーブルに休憩開始を記録
+        BreakTime::create([
+            'attendance_id' => $attendance->id,
+            'break_start' => Carbon::now(),
+        ]);
+
+        return redirect()->route('user.attendance.create');
+    }
+
+    public function endBreak()
+    {
+        $attendance = Attendance::where('user_id', auth()->id())
+            ->whereDate('date',today())
+            ->first();
+
+        // 休憩中ではないなら、休憩戻りできない
+        if (!$attendance  || $attendance->status !== Attendance::STATUS_BREAK) {
+            return back();
+        }
+    
+        // 最新の休憩レコードを取得
+        $break = BreakTime::where('attendance_id', $attendance->id)
+            ->whereNull('break_end')
+            ->latest()
+            ->first();
+
+        if (!$break) {
+            return back();
+        }    
+
+        // Break_timesテーブルに休憩終了時刻を記録
+        $break->break_end = Carbon::now();
+        $break->save();
+
+        // statusを出勤中に戻す
+        $attendance->status = Attendance::STATUS_WORKING;
+        $attendance->save();
+
+        return redirect()->route('user.attendance.create');
+    }
+
+    public function end()
+    {
+        $attendance = Attendance::where('user_id', auth()->id())
+            ->whereDate('date',today())
+            ->first();
+
+        // 出勤中ではないなら、退勤できない
+        if (!$attendance  || $attendance->status !== Attendance::STATUS_WORKING) {
+            return back();
+        }
+
+        // Attendanceテーブルに退勤時刻を記録
+        $attendance->work_end = Carbon::now();
+        
+        // statusを退勤済に変更
+        $attendance->status = Attendance::STATUS_FINISHED;
+        $attendance->save();
+        
+        return redirect()->route('user.attendance.create');
     }
 
     // 勤怠一覧画面の表示

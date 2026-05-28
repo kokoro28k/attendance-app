@@ -47,9 +47,8 @@ class AttendancesTableSeeder extends Seeder
                 }
                     $workStart = '10:00:00';
                     $workEnd = '17:00:00';
-                }
             }
-
+            
             Attendance::create([
                 'user_id' => $userId,
                 'date' => $date->format('Y-m-d'),
@@ -59,4 +58,5 @@ class AttendancesTableSeeder extends Seeder
             ]);
         }
     }
+}
 

@@ -14,7 +14,7 @@ class BreakTimesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $attendances = Attendance::all();
+        $attendances = Attendance::whereIn('user_id',[2, 3])->get();
 
         foreach ($attendances as $attendance) {
 

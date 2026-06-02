@@ -28,6 +28,9 @@ class Attendance extends Model
     ];
 
     protected $casts = [
+        'date' => 'date',
+        'work_start' => 'datetime',
+        'work_end' => 'datetime',
         'status' => 'integer',
     ];
 
@@ -62,8 +65,7 @@ class Attendance extends Model
 
         foreach ($this->breakTimes as $break) {
             if ($break->break_start && $break->break_end) {
-            $totalMinutes += \Carbon\Carbon::parse($break->break_start)
-                ->diffInMinutes(\Carbon\Carbon::parse($break->break_end));
+            $totalMinutes += $break->break_start->diffInMinutes($break->break_end);
             }
         }
 
@@ -83,8 +85,7 @@ class Attendance extends Model
         return 0;
         }
 
-        $workMinutes = \Carbon\Carbon::parse($this->work_start)
-        ->diffInMinutes(\Carbon\Carbon::parse($this->work_end));
+        $workMinutes = $this->work_start->diffInMinutes($this->work_end);
 
         return $workMinutes - $this->break_total_minutes;
     }

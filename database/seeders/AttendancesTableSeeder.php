@@ -30,9 +30,9 @@ class AttendancesTableSeeder extends Seeder
     private function generateMonth(Carbon $carbon, int $userId, string $pattern)
     {
         $start = $carbon->copy()->startOfMonth();
-        $end = $carbon->copy()->endOfMonth();
+        $today = Carbon::today();
 
-        for ($date = $start->copy(); $date->lte($end); $date->addDay()){
+        for ($date = $start->copy(); $date->lte($today); $date->addDay()){
             // 月曜日～金曜日だけ
             if ($date->dayOfWeekIso > 5) continue;
             if ($pattern === 'patternA') {

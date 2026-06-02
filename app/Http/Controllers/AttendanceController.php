@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BreakTime;
+use App\Models\Application;
 
 class AttendanceController extends Controller
 {
@@ -36,7 +37,7 @@ class AttendanceController extends Controller
     // 勤怠登録 出勤
     public function start(Request $request)
    {
-        $today = Carbon::today();
+        $today = Carbon::today()->toDateString();
 
         // 今日の勤怠がすでにあるなら出勤済み扱い
         $attendance = Attendance::where('user_id',auth()->id())
@@ -44,10 +45,19 @@ class AttendanceController extends Controller
             ->first();
         
         if ($attendance) {
+            if ($attendance->status !== Attendance::STATUS_OFF) {
             return redirect()->route('user.attendance.create');
-        }
+            }
+        
+        // 勤務外なら、出勤に更新する
+            $attendance->status = Attendance::STATUS_WORKING;
+            $attendance->work_start = Carbon::now();
+            $attendance->save();
 
-        // 出勤レコードを作成
+            return redirect()->route('user.attendance.create');
+        } 
+
+        // レコードがない場合は、新規作成する
         Attendance::create([
             'user_id' => auth()->id(),
             'date' => $today,
@@ -56,11 +66,13 @@ class AttendanceController extends Controller
         ]);
 
         return redirect()->route('user.attendance.create');
-    } 
+   }
 
     // 勤怠登録　休憩入り
     public function startBreak()
     {
+        $today = Carbon::today()->toDateString();
+
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date',today())
             ->first();
@@ -85,6 +97,8 @@ class AttendanceController extends Controller
 
     public function endBreak()
     {
+        $today = Carbon::today()->toDateString();
+
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date',today())
             ->first();
@@ -117,6 +131,8 @@ class AttendanceController extends Controller
 
     public function end()
     {
+        $today = Carbon::today()->toDateString();
+
         $attendance = Attendance::where('user_id', auth()->id())
             ->whereDate('date',today())
             ->first();
@@ -149,27 +165,36 @@ class AttendanceController extends Controller
         $start = $targetDate->copy()->startOfMonth();
         $end = $targetDate->copy()->endOfMonth();
 
-        // １ヶ月の日付けを作る
-        $dates = [];
-        for ($date = $start->copy(); $date->lte($end); $date->addDay()){
-            $dates[] = $date->copy();
+        // 月初～月末の勤怠の外枠を自動生成
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            Attendance::firstOrCreate([
+                'user_id' => auth()->id(),
+                'date' => $date->format('Y-m-d'),
+            ],
+            [
+                'status' => Attendance::STATUS_OFF,
+            ]
+            );
         }
 
         // 勤怠データを取得する　キーを日付にする
         $attendances = Attendance::where('user_id',auth()->id())
-            ->whereBetween('date', [$start,$end])->with('breakTimes')
+            ->whereBetween('date', [$start->format('Y-m-d'),$end->format('Y-m-d')])
+            ->with('breakTimes')
             ->get()
-            ->keyBy('date');
+            ->keyBy(function ($item) {
+                return $item->getRawOriginal('date');
+            });
 
         // 日付ことに勤怠または、勤怠なしを作る
         $rows = [];
-        foreach ($dates as $date){
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $dateKey = $date->format('Y-m-d');
             $rows[] = [
-                'date' => $date,
+                'date' => $date->format('Y-m-d'),
                 'attendance' => $attendances[$dateKey] ?? null,
             ];
-            }
+        }
 
         return view('user.attendances.index',compact('rows','targetDate','prevMonth','nextMonth'));
     }
@@ -180,7 +205,7 @@ class AttendanceController extends Controller
         // 本人の勤怠データを取得
         $attendance = Attendance::where('id',$id)    
             ->where('user_id',auth()->id())
-            ->with('breakTImes')->firstOrFail();
+            ->with('breakTimes')->firstOrFail();
 
         $year = $attendance->date->format('Y年');
         $monthDay = $attendance->date->format('n月j日');
@@ -189,6 +214,6 @@ class AttendanceController extends Controller
             ->where('status','pending')
             ->exists();
 
-        return view('user.attendaces.show',compact('attendace','year','monthDay','isPending'));
+        return view('user.attendances.show',compact('attendance','year','monthDay','isPending'));
     }
 }

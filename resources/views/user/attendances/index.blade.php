@@ -33,8 +33,8 @@
 
 
             {{-- 勤怠一覧テーブル --}}
-            <table class="attendace-table">
-                <tr class="attenfdance-row">
+            <table class="attendance-table">
+                <tr class="attendance-row">
                     <th class="attendance-label">日付</th>
                     <th class="attendance-label">出勤</th>
                     <th class="attendance-label">退勤</th>
@@ -44,17 +44,27 @@
                 </tr>
                 @foreach ($rows as $row)
                     <tr class="attendance-row">
-                        <td class="attendance-data">{{ $row['date']->format('m/d(D)') }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_start }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_end }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->break_total_hm }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_minutes }}</td>
+                        <td class="attendance-data">
+                            {{ \Carbon\Carbon::parse($row['date'])->isoFormat('MM/DD(dd)') }}</td>
+                        <td class="attendance-data">
+                            {{ optional($row['attendance'])->work_start ? $row['attendance']->work_start->format('H:i') : '' }}
+                        </td>
+                        <td class="attendance-data">
+                            {{ optional($row['attendance'])->work_end ? $row['attendance']->work_end->format('H:i') : '' }}
+                        </td>
+                        <td class="attendance-data">
+                            {{ $row['attendance']->break_total_hm }}
+                        </td>
+                        <td class="attendance-data">
+                            {{ \Carbon\CarbonInterval::minutes($row['attendance']->work_minutes)->cascade()->format('%H:%I') }}
+                        </td>
                         <td class="attendance-data__detail">
-                            <a class="detail"
-                                href="{{ route('user.attendance.show', [
-                                    ->format('Y-m-d'),
-                                    'attendance' => optional($row['attendance'])->id,
-                                ]) }}">詳細</a>
+                            @if ($row['attendance'])
+                                <a class="detail"
+                                    href="{{ route('user.attendance.show', [
+                                        'id' => $row['attendance']->id,
+                                    ]) }}">詳細</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

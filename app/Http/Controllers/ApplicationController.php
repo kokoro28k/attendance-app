@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Application;
 use App\Models\Attendance;
-
+use App\Models\ApplicationBreak;
+use App\Models\BreakTime;
 
 class ApplicationController extends Controller
 {
@@ -23,7 +25,7 @@ class ApplicationController extends Controller
 
         $applications = $query->orderBy('user_id')->get();
 
-        return view('admin.applications.index',compact('applications','tab'));
+        return view('user.applications.index',compact('applications','tab'));
     }
 
     // 申請一覧画面の詳細ボタンの処理
@@ -42,16 +44,5 @@ class ApplicationController extends Controller
         $monthDay =  $attendance->date->format('n月j日');
     }
 
-    public function store(Request $request,$id)
-    {
-        $attendance = Attendance::where('user_id')->get();
 
-        $year = $attendance->date->format();
-        $monthDay = $attendance->date->format();
-
-        $index =
-
-        $isPending = Application::where('status',STATUS_PENDING);
-
-    }
 }

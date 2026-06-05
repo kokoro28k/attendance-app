@@ -12,7 +12,7 @@
             <div class="month-navigation">
                 <div class="month-navigation__before">
                     <span class="month-navigation__arrow">←</span>
-                    <a href="{{ route('user.attendance.index', ['month' => $prevMonth]) }}" class="month-button">前月
+                    <a href="{{ route('user.attendance.index', ['year_month' => $prevMonth]) }}" class="month-button">前月
                     </a>
                 </div>
 
@@ -25,7 +25,7 @@
 
                 <div class="month-navigation__after">
                     <span class="month-navigation__arrow">→</span>
-                    <a href="{{ route('user.attendance.index', ['month' => $nextMonth]) }}" class="month-button">翌月
+                    <a href="{{ route('user.attendance.index', ['year_month' => $nextMonth]) }}" class="month-button">翌月
                     </a>
 
                 </div>

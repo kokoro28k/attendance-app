@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Application;
-use App\Models\BreakTime;
 
 class ApplicationBreak extends Model
 {
@@ -14,7 +13,6 @@ class ApplicationBreak extends Model
 
     protected $fillable = [
         'application_id',
-        'break_time_id',
         'corrected_break_start',
         'corrected_break_end',
     ];
@@ -24,8 +22,4 @@ class ApplicationBreak extends Model
         return $this->belongsTo(Application::class);
     }
 
-    public function breakTime(): BelongsTo
-    {
-        return $this->belongsTo(BreakTime::class);
-    }
 }

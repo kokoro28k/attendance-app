@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('approvals', function (Blueprint $table) {
+        Schema::create('application_breaks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('application_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('break_time_id')->constrained()->cascadeOnDelete();
             $table->time('corrected_break_start')->nullable();
             $table->time('corrected_break_end')->nullable();
             $table->timestamps();
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('approvals');
+        Schema::dropIfExists('application_breaks');
     }
 };

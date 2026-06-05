@@ -21,7 +21,7 @@
                     <tbody>
                         @foreach ($users as $user)
                             <tr class="list-row">
-                                <td class="list-data">{{ $user->name }}</td>
+                                <td class="list-data name-text">{{ $user->name }}</td>
                                 <td class="list-data">{{ $user->email }}</td>
                                 <td class="list-data"><a class="list-data__detail"
                                         href="{{ route('staff.attendance', ['id' => $user->id]) }}">詳細</a>

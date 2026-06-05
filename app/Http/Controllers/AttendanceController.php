@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Attendance;
-use Illuminate\Support\Facades\Auth;
 use App\Models\BreakTime;
 use App\Models\Application;
+use App\Models\ApplicationBreak;
+use App\Http\Requests\ApplicationRequest;
 
 class AttendanceController extends Controller
 {
@@ -210,10 +213,78 @@ class AttendanceController extends Controller
         $year = $attendance->date->format('Y年');
         $monthDay = $attendance->date->format('n月j日');
 
-        $isPending = Application::where('attendance_id',$attendance->id)
-            ->where('status','pending')
-            ->exists();
+        // 最新の修正申請を取得
+        $application = Application::where('attendance_id', $attendance->id )
+            ->latest()
+            ->with('applicationBreaks')
+            ->first();
 
-        return view('user.attendances.show',compact('attendance','year','monthDay','isPending'));
+        $isPending = $application && $application->status === Application::STATUS_PENDING;
+
+        // 出勤・退勤（表示用）
+        $displayWorkStart = $isPending ? Carbon::parse($application->corrected_work_start)->format('H:i')
+        : optional($attendance->work_start)->format('H:i');
+
+        $displayWorkEnd = $isPending ? Carbon::parse($application->corrected_work_end)->format('H:i')
+        : optional($attendance->work_end)->format('H:i');
+
+
+        // 休憩（表示用）
+        $displayBreaks = [];
+        foreach ($attendance->breakTimes as $i => $break) {
+            $appBreak = $application->applicationBreaks[$i] ?? null;
+
+            $displayBreaks[$i] = [
+                'start' => $isPending ? ($appBreak && $appBreak->corrected_break_start ? Carbon::parse($appBreak->corrected_break_start)->format('H:i'): null)
+                : optional($break->break_start)->format('H:i'),
+
+                'end' => $isPending ? ($appBreak && $appBreak->corrected_break_end
+                ? Carbon::parse($appBreak->corrected_break_end)->format('H:i')
+                : null)
+                : optional($break->break_end)->format('H:i'),
+            ];
+        }
+
+        $displayReason = $isPending ? $application->reason : '';
+
+        return view('user.attendances.show',compact('attendance','year','monthDay','isPending','displayWorkStart','displayWorkEnd','displayBreaks','displayReason'));
+    }
+
+    public function store(ApplicationRequest $request)
+    {
+        $validated = $request->validated();
+        
+        // attedanceを取得
+        $attendance = Attendance::find($validated['attendance_id']);
+
+        DB::transaction(function () use ($validated,$attendance) {
+
+            // applicationを作成
+            $application = new Application();
+            $application->user_id = auth()->id();
+            $application->attendance_id = $attendance->id;
+            $application->corrected_work_start = $validated['corrected_work_start'] ?? null;
+            $application->corrected_work_end = $validated['corrected_work_end'] ?? null;
+            $application->reason = $validated['reason'];
+            $application->status = Application::STATUS_PENDING;
+            $application->applied_at = now()->toDateString();
+
+            $application->save();
+
+            // 休憩の保存
+            foreach ($validated['corrected_break_start'] as $i => $start) {
+                $end = $validated['corrected_break_end'][$i] ?? null;
+
+                if ($start && $end) {
+                    ApplicationBreak::create([
+                        'application_id' => $application->id,
+                        'corrected_break_start' => $start,
+                        'corrected_break_end' => $end,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('user.attendance.show', $attendance->id);
     }
 }

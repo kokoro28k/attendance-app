@@ -11,9 +11,9 @@
             <div class="border">
                 <ul class="tab-list">
                     <li class="tab-item {{ $tab === 'pending' ? 'active' : '' }}"><a
-                            href="{{ route('admin.application.list', ['tab' => 'pending']) }}">承認待ち</a></li>
+                            href="{{ route('user.application.index', ['tab' => 'pending']) }}">承認待ち</a></li>
                     <li class="tab-item {{ $tab === 'approved' ? 'active' : '' }}"><a
-                            href="{{ route('admin.application.list', ['tab' => 'approved']) }}">承認済み</a></li>
+                            href="{{ route('user.application.index', ['tab' => 'approved']) }}">承認済み</a></li>
                 </ul>
             </div>
             <div class="table-wrapper">

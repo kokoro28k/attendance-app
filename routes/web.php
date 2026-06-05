@@ -100,7 +100,7 @@ Route::middleware(['auth','user'])->group(function () {
         ->name('user.break.end');
 
 
-    Route::post('/applications',[ApplicationController::class,'store'])
+    Route::post('/applications',[AttendanceController::class,'store'])
         ->name('user.application.store');
 
     Route::get('/attendance/list',[AttendanceController::class,'index'])

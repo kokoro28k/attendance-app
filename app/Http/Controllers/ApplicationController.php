@@ -15,12 +15,12 @@ class ApplicationController extends Controller
     {
         $tab = $request->query('tab','pending');
      
-        $query = Application::with(['attendance'])->where('user_id',auth()->id());
+        $query = Application::with(['attendance','user'])->where('user_id',auth()->id());
 
         if ($tab === 'pending') {
-            $query->where('status','pending')->orderBy('applied_at','asc');
+            $query->where('status',Application::STATUS_PENDING)->orderBy('applied_at','asc');
         } elseif ($tab === 'approved') {
-            $query->where('status','approved')->ordeBy('applied_at','desc');
+            $query->where('status',Application::STATUS_APPROVED)->orderBy('applied_at','desc');
         }
 
         $applications = $query->orderBy('user_id')->get();

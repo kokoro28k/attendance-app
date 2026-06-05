@@ -213,11 +213,21 @@ class AttendanceController extends Controller
         $year = $attendance->date->format('Y年');
         $monthDay = $attendance->date->format('n月j日');
 
-        // 最新の修正申請を取得
-        $application = Application::where('attendance_id', $attendance->id )
-            ->latest()
-            ->with('applicationBreaks')
-            ->first();
+        // 申請一覧の詳細ボタンを押した場合の表示
+        $applicationId = request()->application_id;
+
+        if ($applicationId) {
+            $application = Application::where('id', $applicationId)
+                ->where('attendance_id',$attendance->id)
+                ->with('applicationBreaks')
+                ->firstOrFail();
+        } else {
+            // 通常の勤怠詳細
+            $application = Application::where('attendance_id', $attendance->id)
+                ->latest()
+                ->with('applicationBreaks')
+                ->first();
+        }
 
         $isPending = $application && $application->status === Application::STATUS_PENDING;
 

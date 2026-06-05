@@ -36,9 +36,10 @@
                                 <td class="application-data">{{ $application->user->name }}</td>
                                 <td class="application-data">{{ $application->attendance->date->format('Y/m/d') }}</td>
                                 <td class="application-data">{{ $application->reason }}</td>
-                                <td class="application-data">{{ $application->applied_at }}</td>
-                                <td class="application-data"><a class="application-data__detail"
-                                        href="{{ route('user.attendance.show', ['id' => $application->id]) }}">詳細</a>
+                                <td class="application-data">{{ $application->applied_at->format('Y/m/d') }}</td>
+                                <td class="application-data">
+                                    <a class="application-data__detail"
+                                        href="{{ route('user.attendance.show', ['id' => $application->attendance_id, 'application_id' => $application->id]) }}">詳細</a>
                                 </td>
                             </tr>
                         @endforeach

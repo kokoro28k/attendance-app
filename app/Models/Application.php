@@ -29,6 +29,9 @@ class Application extends Model
 
     protected $casts = [
         'status' => 'integer',
+        'applied_at' => 'datetime',
+        'corrected_work_start' => 'datetime',
+        'corrected_work_end' => 'datetime',
     ];
 
     public function getStatusLabelAttribute()

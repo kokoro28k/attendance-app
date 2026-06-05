@@ -110,7 +110,8 @@
     margin-bottom: 60px;
 }
 
-.attendance-label,.attendance-data{
+.attendance-label,
+.attendance-data{
     color: #757575;
     font-size: 20px;
     font-weight: bold;

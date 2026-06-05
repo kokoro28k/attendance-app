@@ -17,6 +17,11 @@ class ApplicationBreak extends Model
         'corrected_break_end',
     ];
 
+    protected $casts = [
+        'corrected_break_start' => 'datetime',
+        'corrected_break_end' => 'datetime',
+    ];
+
     public function application(): BelongsTo
     {
         return $this->belongsTo(Application::class);

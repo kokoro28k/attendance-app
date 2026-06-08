@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Application;
 use App\Http\Request\AttendanceRequest;
 
 class AdminAttendanceController extends Controller
@@ -37,7 +38,19 @@ class AdminAttendanceController extends Controller
     {
         $attendance = Attendance::with(['user','breakTimes'])->findOrFail($id);
 
-        return view('admin.attendances.show',compact('attendance'));
+        $year = $attendance->date->format('Y年');
+
+        $monthDay = $attendance->date->format('n月j日');
+
+        $application = Application::where('attendance_id',$attendance->id)
+        ->latest()
+        ->first();
+
+        
+        $isPending = $application && $application->status === Application::STATUS_PENDING;
+
+
+        return view('admin.attendances.show',compact('attendance','year','monthDay','isPending'));
     }
 
     public function staffIndex()

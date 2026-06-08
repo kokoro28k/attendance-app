@@ -190,12 +190,20 @@ class AttendanceController extends Controller
             });
 
         // 日付ことに勤怠または、勤怠なしを作る
+        $today = Carbon::today();
         $rows = [];
+
         for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $dateKey = $date->format('Y-m-d');
+            $attendance = $attendances[$dateKey] ?? null;
+
+            // 表示用のattendance　未来と未出勤はnullにする
+            $displayAttendance = ( $date->isFuture() || !$attendance?->work_start ) ? null : $attendance;
+
             $rows[] = [
-                'date' => $date->format('Y-m-d'),
-                'attendance' => $attendances[$dateKey] ?? null,
+                'date' => $dateKey,
+                'attendance' => $displayAttendance,
+                'attendance_id' => $attendance?->id
             ];
         }
 

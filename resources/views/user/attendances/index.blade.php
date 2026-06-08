@@ -53,16 +53,16 @@
                             {{ optional($row['attendance'])->work_end ? $row['attendance']->work_end->format('H:i') : '' }}
                         </td>
                         <td class="attendance-data">
-                            {{ $row['attendance']->break_total_hm }}
+                            {{ $row['attendance'] && $row['attendance']->work_start && $row['attendance']->work_end ? $row['attendance']->break_total_hm : '' }}
                         </td>
                         <td class="attendance-data">
-                            {{ \Carbon\CarbonInterval::minutes($row['attendance']->work_minutes)->cascade()->format('%H:%I') }}
+                            {{ $row['attendance'] && $row['attendance']->work_start && $row['attendance']->work_end ? \Carbon\CarbonInterval::minutes($row['attendance']->work_minutes)->cascade()->format('%H:%I') : '' }}
                         </td>
                         <td class="attendance-data__detail">
-                            @if ($row['attendance'])
+                            @if ($row['attendance_id'])
                                 <a class="detail"
                                     href="{{ route('user.attendance.show', [
-                                        'id' => $row['attendance']->id,
+                                        'id' => $row['attendance_id'],
                                     ]) }}">詳細</a>
                             @endif
                         </td>

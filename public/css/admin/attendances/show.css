@@ -1,6 +1,7 @@
 .attendance-detail {
     background-color: #f0eff2;
     min-height: 100vh;
+    padding-bottom: 100px;
 }
 
 .attendance-detail__inner {
@@ -10,36 +11,59 @@
 }
 
 .detail-heading {
-    padding: 0 10px;
-    border-left: 5px solid #000;
+    padding-left: 20px;
+    padding-right: 0;
+    border-left: 8px solid #000;
+    width: 60%;
+    margin: 60px auto;
+    font-size: 36px;
+    text-align: left;
+    margin-left: 260px;
+    
+}
+
+.table-wrapper {
+    position: relative;
 }
 
 .detail-table {
-    margin-top: 16px;
+    margin: 40px auto 0;
     width: 100%;
+    max-width: 1000px;
     border-collapse: collapse;
-    border: 1px solid #b3b3b3;
+    border: none;
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
+    padding-bottom: 100px;
 }
 
 .detail-row {
-    border: 1px solid #b3b3b3;
+    border: 2px solid #b3b3b3;
     padding: 20px;
     align-items: center;
+    border-left: none;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 60px;
 }
 
 .detail-label {
     color: #757575;
     font-size: 20px;
     font-weight: bold;
-    padding: 10px 0;
+    padding: 30px 0 30px 80px;
+    text-align: center;
+    letter-spacing: 2px;
+    width: 200px;    
 }
 
 .detail-data {
     color: black;
     font-size: 20px;
     font-weight: bold;
+    text-align: left;
+        letter-spacing: 2px;
+        padding: 30px 0 30px 200px;
 }
 
 .data-row {

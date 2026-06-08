@@ -24,17 +24,16 @@
                 </div>
 
                 <div class="date-navigation__after">
-                    <span class="date-navigation__arrow">→</span>
                     <a href="{{ route('admin.attendance.index', ['date' => $nextDate]) }}" class="date-button">翌日
                     </a>
-
+                    <span class="date-navigation__arrow">→</span>
                 </div>
             </div>
 
 
             {{-- 勤怠一覧テーブル --}}
-            <table class="attendace-table">
-                <tr class="attenfdance-row">
+            <table class="attendance-table">
+                <tr class="attendance-row">
                     <th class="attendance-label">名前</th>
                     <th class="attendance-label">出勤</th>
                     <th class="attendance-label">退勤</th>
@@ -45,10 +44,13 @@
                 @foreach ($attendances as $attendance)
                     <tr class="attendance-row">
                         <td class="attendance-data">{{ $attendance->user->name }}</td>
-                        <td class="attendance-data">{{ $attendance->work_start }}</td>
-                        <td class="attendance-data">{{ $attendance->work_end }}</td>
-                        <td class="attendance-data">{{ $attendance->break_total_hm }}</td>
-                        <td class="attendance-data">{{ $attendance->work_minutes }}</td>
+                        <td class="attendance-data">{{ optional($attendance->work_start)->format('H:i') }}</td>
+                        <td class="attendance-data">{{ optional($attendance->work_end)->format('H:i') }}</td>
+                        <td class="attendance-data">
+                            {{ $attendance->work_start && $attendance->work_end ? $attendance->break_total_hm : '' }}</td>
+                        <td class="attendance-data">
+                            {{ $attendance->work_start && $attendance->work_end ? \Carbon\CarbonInterval::minutes($attendance->work_minutes)->cascade()->format('%H:%I') : '' }}
+                        </td>
                         <td class="attendance-data__detail">
                             <a class="detail" href="{{ route('admin.attendance.show', $attendance->id) }}">詳細</a>
                         </td>

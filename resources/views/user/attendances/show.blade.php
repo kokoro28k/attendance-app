@@ -10,6 +10,7 @@
             <h1 class="detail-heading">勤怠詳細</h1>
             <form action="{{ route('user.application.store') }}" method="post" autocomplete="off">
                 @csrf
+            
                 <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
                 <div class="table-wrapper">
@@ -91,6 +92,7 @@
                         @php
                             $emptyIndex = $attendance->breakTimes->count();
                         @endphp
+                        
                         @if (!$isPending)
                             <tr class="detail-row">
                                 <th class="detail-label"> {{ $emptyIndex === 0 ? '休憩' : '休憩' . ($emptyIndex + 1) }}</th>

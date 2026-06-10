@@ -249,18 +249,28 @@ class AttendanceController extends Controller
 
         // 休憩（表示用）
         $displayBreaks = [];
-        foreach ($attendance->breakTimes as $i => $break) {
-            $appBreak = $application->applicationBreaks[$i] ?? null;
 
-            $displayBreaks[$i] = [
-                'start' => $isPending ? ($appBreak && $appBreak->corrected_break_start ? Carbon::parse($appBreak->corrected_break_start)->format('H:i'): null)
-                : optional($break->break_start)->format('H:i'),
+        // 申請一覧からの遷移、または申請が承認待ち
+        if ($applicationId || $isPending) {
+            // 申請内容を表示
+            foreach ($application->applicationBreaks as $i => $appBreak) {
+                $displayBreaks[$i] = [
+                    'start' => $appBreak->corrected_break_start ? Carbon::parse($appBreak->corrected_break_start)->format('H:i') : null,
 
-                'end' => $isPending ? ($appBreak && $appBreak->corrected_break_end
-                ? Carbon::parse($appBreak->corrected_break_end)->format('H:i')
-                : null)
-                : optional($break->break_end)->format('H:i'),
-            ];
+                    'end' => $appBreak->corrected_break_end ? Carbon::parse($appBreak->corrected_break_end)->format('H:i') : null,
+                ];
+            }
+        } else {
+
+            // 通常の勤怠表示
+            foreach ($attendance->breakTimes as $i => $break) {
+
+                $displayBreaks[$i] = [
+                    'start' => optional($break->break_start)->format('H:i'),
+
+                    'end' => optional($break->break_end)->format('H:i'),
+                ];
+            }
         }
 
         $displayReason = $isPending ? $application->reason : '';

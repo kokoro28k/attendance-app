@@ -7,7 +7,9 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Application;
-use App\Http\Request\AttendanceRequest;
+use App\Models\BreakTime;
+use App\Models\ApplicationBreak;
+use App\Http\Requests\AttendanceUpdateRequest;
 
 class AdminAttendanceController extends Controller
 {
@@ -34,6 +36,7 @@ class AdminAttendanceController extends Controller
         ]);
     }
 
+    // 勤怠詳細画面の表示
     public function show($id)
     {
         $attendance = Attendance::with(['user','breakTimes'])->findOrFail($id);
@@ -46,11 +49,72 @@ class AdminAttendanceController extends Controller
         ->latest()
         ->first();
 
-        
         $isPending = $application && $application->status === Application::STATUS_PENDING;
 
+        // 出勤・退勤（表示用）
+        $displayWorkStart = $isPending ? Carbon::parse($application->corrected_work_start)->format('H:i') : optional($attendance->work_start)->format('H:i');
 
-        return view('admin.attendances.show',compact('attendance','year','monthDay','isPending'));
+        $displayWorkEnd = $isPending ? Carbon::parse($application->corrected_work_end)->format('H:i') : optional($attendance->work_end)->format('H:i');
+   
+        // 休憩（表示用）
+        $displayBreaks = [];
+
+        $max = max(
+            count($attendance->breakTimes),
+            count($application->applicationBreaks)
+        );
+
+        for ($i = 0; $i < $max; $i ++) {
+
+            $break = $attendance->breakTimes[$i] ?? null;
+            $appBreak = $application->applicationBreaks[$i] ?? null;
+            
+            $displayBreaks[$i] = [
+                'start' => $appBreak?->corrected_break_start ? Carbon::parse($appBreak->corrected_break_start)->format('H:i') : optional($break->break_start)->format('H:i'),
+
+                'end' => $appBreak?->corrected_break_end ? Carbon::parse($appBreak->corrected_break_end)->format('H:i') :optional($break->break_end)->format('H:i'),
+            ];
+        }
+        
+        $displayReason = $isPending ? $application->reason : '';
+
+        return view('admin.attendances.show',compact('attendance','year','monthDay','isPending','displayWorkStart','displayWorkEnd','displayBreaks','displayReason'));
+    }
+
+    public function update(AttendanceUpdateRequest $request,$attendanceId)
+    {
+        $validated = $request->validated();
+
+        $attendance = Attendance::findOrFail($attendanceId);
+
+        // 勤怠の更新
+        $attendance->update([
+            'work_start' => $validated['work_start'],
+            'work_end' => $validated['work_end'],
+            'note' => $validated['note'],
+            'status' => Attendance::STATUS_FINISHED,
+        ]);
+
+        // 既存の休憩の更新
+        foreach($attendance->breakTimes as $index => $break) {
+            $break->update([
+                'break_start' => $validated['break_start'][$index] ?? null,
+                'break_end' => $validated['break_end'][$index] ?? null,
+            ]);
+        }
+
+        // 空欄の休憩に入力
+        $existingCount = $attendance->breakTimes->count();
+
+        if (!empty($validated['break_start'][$existingCount])) {
+            BreakTime::create([
+                'attendance_id' => $attendance->id,
+                'break_start' => $validated['break_start'][$existingCount] ?? null,
+                'break_end' => $validated['break_end'][$existingCount] ?? null,
+            ]);
+        }
+        
+        return redirect()->route('admin.attendance.index');
     }
 
     public function staffIndex()
@@ -99,28 +163,5 @@ class AdminAttendanceController extends Controller
         }
 
         return view('admin.staff.attendance-index',compact('rows','targetDate','prevMonth','nextMonth','attendances','user'));
-    }
-
-    public function update(AttendanceRequest $request,$id)
-    {
-        $attendance = Attendance::with('breakTimes')->findOrFail($id);
-
-        $validated = $request->validated();
-
-        $attendance->update([
-            'work_start' => $validated['work_start'],
-            'work_end' => $validated['work_end'],
-            'reason' => $validated['reason'],
-        ]);
-
-        foreach ($attendance->breakTimes as $index => $break) {
-            $break->update([
-                'break_start' => $validated['break_start'][$index],
-                'break_end' => $validated['break_end'][$index],
-            ]);
-        }
-
-        // 日別勤怠一覧にリダイレクトする？（要確認）
-        return redirect()->route('admin.attendance.index');
     }
 }

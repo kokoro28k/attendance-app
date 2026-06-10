@@ -18,6 +18,7 @@ return new class extends Migration
             $table->time('work_start')->nullable();
             $table->time('work_end')->nullable();
             $table->string('status');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

@@ -8,34 +8,62 @@ use App\Models\Attendance;
 use Carbon\Carbon;
 use App\Models\User;
 
-class AttendancesSeeder extends Seeder
+class AttendanceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // 前月と今月
-        $prev = Carbon::now()->subMonth();
-        $now = Carbon::now();
+        $base = Carbon::today();
+        $prev = $base->copy()->subMonth();
+        $now = $base->copy();
 
         //UsersSeederで作ったユーザー
         $user1 = User::where('email','reina.n@coachtech.com')->first();
         $user2 = User::where('email','taro.y@coachtech.com')->first();
 
         // user1
-        $this->generateMonth($prev, $user1->id, 'patternA');
-        $this->generateMonth($now, $user1->id, 'patternA');
+        $this->generateMonth($prev, $user1->id, 'patternA',$base);
+        $this->generateMonth($now, $user1->id, 'patternA',$base);
 
         // user2
-        $this->generateMonth($prev, $user2->id, 'patternB');
-        $this->generateMonth($now, $user2->id, 'patternB');
+        $this->generateMonth($prev, $user2->id, 'patternB',$base);
+        $this->generateMonth($now, $user2->id, 'patternB',$base);
+
+         // 前月、今月、翌月
+        $months = [
+            Carbon::now()->subMonth()->startOfMonth(),
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->addMonth()->startOfMonth(),
+        ];    
+
+        foreach ([$user1->id, $user2->id] as $userId) {
+            foreach ($months as $monthStart) {
+
+            $start = $monthStart->copy();
+            $end = $monthStart->copy()->endOfMonth();
+
+                for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+
+                    Attendance::firstOrCreate(
+                        [
+                            'user_id' => $userId,
+                            'date' => $date->format('Y-m-d'),
+                        ],
+                        [
+                            'status' => Attendance::STATUS_OFF
+                        ]
+                    );
+                }
+            }
+        }
     }
 
-    private function generateMonth(Carbon $carbon, int $userId, string $pattern)
+    private function generateMonth(Carbon $carbon, int $userId, string $pattern, Carbon $base)
     {
         $start = $carbon->copy()->startOfMonth();
-        $today = Carbon::yesterday();
+        $today = $base->copy()->subDay();
 
         for ($date = $start->copy(); $date->lte($today); $date->addDay()){
             // 月曜日～金曜日だけ
@@ -54,13 +82,17 @@ class AttendancesSeeder extends Seeder
                 $workEnd = '17:00:00';
             }
             
-            Attendance::firstOrCreate([
+            Attendance::updateOrCreate(
+            [
                 'user_id' => $userId,
                 'date' => $date->format('Y-m-d'),
+            ],
+            [
                 'work_start' => $workStart,
                 'work_end' => $workEnd,
                 'status' => Attendance::STATUS_FINISHED,
-            ]);
+            ]
+            );
         }
 
         // 今日～月末の外枠を作る

@@ -44,7 +44,7 @@ class ApplicationRequest extends FormRequest
             // ① 出勤 > 退勤
             if ($workStart && $workEnd && $workStart > $workEnd) {
                 $validator->errors()->add('corrected_work_start', '出勤時間もしくは退勤時間が不適切な値です');
-                return; // ← 仕様書通り、休憩チェックはしない
+                return; // 休憩チェックはしない
             }
 
             // ② 休憩開始の範囲チェック
@@ -56,6 +56,14 @@ class ApplicationRequest extends FormRequest
 
             // ③ 休憩終了の範囲チェック
             foreach ($ends as $i => $end) {
+                $start = $starts[$i] ?? null;
+
+                // 休憩終了 < 休憩開始
+                if ($start && $end && $end < $start) {
+                    $validator->errors()->add("corrected_break_end.$i", '休憩時間もしくは退勤時間が不適切な値です');
+                }
+
+                // 退勤より後
                 if ($end && $end > $workEnd) {
                     $validator->errors()->add("corrected_break_end.$i", '休憩時間もしくは退勤時間が不適切な値です');
                 }

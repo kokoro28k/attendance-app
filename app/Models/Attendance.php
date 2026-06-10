@@ -25,6 +25,7 @@ class Attendance extends Model
         'work_start',
         'work_end',
         'status',
+        'note',
     ];
 
     protected $casts = [

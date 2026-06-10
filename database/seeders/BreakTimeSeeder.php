@@ -9,7 +9,7 @@ use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 
-class BreakTimesSeeder extends Seeder
+class BreakTimeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,11 +21,15 @@ class BreakTimesSeeder extends Seeder
         $attendancesUser1 = Attendance::where('user_id',$user1->id)->get();
 
         foreach ($attendancesUser1 as $attendance) {
-            BreakTime::firstOrCreate([
+            BreakTime::firstOrCreate(
+            [
                 'attendance_id' => $attendance->id,
                 'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:00:00'),
-                'break_end' => Carbon::parse($attendance->date->format('Y-m-d') . ' 13:00:00'),
-            ]);
+            ],
+            [   
+                'break_end' => Carbon::parse        ($attendance->date->format('Y-m-d') . ' 13:00:00'),
+            ]
+            );
         }
 
         // user2の勤怠に休憩（2回分）をつける
@@ -33,17 +37,25 @@ class BreakTimesSeeder extends Seeder
         $attendancesUser2 = Attendance::where('user_id', $user2->id)->get();
 
         foreach ($attendancesUser2 as $attendance) {
-            BreakTime::firstOrCreate([
+            BreakTime::firstOrCreate(
+            [
                 'attendance_id' => $attendance->id,
                 'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:00:00'),
+            ],
+            [  
                 'break_end' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:30:00')
-            ]);
+            ]
+            );
 
-            BreakTime::firstOrCreate([
+            BreakTime::firstOrCreate(
+            [
                 'attendance_id' => $attendance->id,
                 'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 15:00:00'),
+            ],
+            [
                 'break_end' => Carbon::parse($attendance->date->format('Y-m-d') . ' 15:30:00')
-            ]);
+            ]
+            );
         }
     }
 }

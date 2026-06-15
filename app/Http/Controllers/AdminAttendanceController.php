@@ -10,6 +10,7 @@ use App\Models\Application;
 use App\Models\BreakTime;
 use App\Models\ApplicationBreak;
 use App\Http\Requests\AttendanceUpdateRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminAttendanceController extends Controller
 {
@@ -60,8 +61,8 @@ class AdminAttendanceController extends Controller
         $displayBreaks = [];
 
         $max = max(
-            count($attendance->breakTimes),
-            count($application->applicationBreaks)
+            $attendance->breakTimes->count(),
+            optional($application?->applicationBreaks)->count() ?? 0
         );
 
         for ($i = 0; $i < $max; $i ++) {
@@ -139,29 +140,96 @@ class AdminAttendanceController extends Controller
         $start = $targetDate->copy()->startOfMonth();
         $end = $targetDate->copy()->endOfMonth();
 
-        // １ヶ月の日付けを作る
-        $dates = [];
-        for ($date = $start->copy(); $date->lte($end); $date->addDay()){
-            $dates[] = $date->copy();
+        // 月初～月末の勤怠の外枠を自動生成
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+            Attendance::firstOrCreate([
+                'user_id' => $id,
+                'date' => $date->format('Y-m-d'),
+            ],
+            [
+                'status' => Attendance::STATUS_OFF,
+            ]
+            );
         }
 
         // 勤怠データを取得する　
-        $attendances = Attendance::with('breakTimes')
-            ->where('user_id',$id)
-            ->whereBetween('date', [$start, $end])
+        $attendances = Attendance::where('user_id',$id)
+            ->whereBetween('date', [$start->format('Y-m-d'), $end->format('Y-m-d')])
+            ->with('breakTimes')
             ->get()
-            ->keyBy('date');
+            ->keyBy(function ($item) {
+                return $item->getRawOriginal('date');
+            });
+
+        $today = Carbon::today();
 
         // ユーザーごとに rows　を作る
         $rows = [];
-        foreach ($dates as $date) {
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $dateKey = $date->format('Y-m-d');
-            $rows[$userId][] = [
-                'date' => $date,
-                'attendance' => $userAttendances[$dateKey] ?? null,
+            $attendance = $attendances[$dateKey] ?? null;
+
+            // 表示用のattendance　未来と未出勤はnullにする
+            $displayAttendance = ( $date->isFuture() || !$attendance?->work_start ) ? null : $attendance;
+
+            $rows[] = [
+                'date' => $dateKey,
+                'attendance' => $displayAttendance,
+                'attendance_id' => $attendance?->id
             ];
         }
 
-        return view('admin.staff.attendance-index',compact('rows','targetDate','prevMonth','nextMonth','attendances','user'));
+        return view('admin.staff.attendance-index',compact('rows','targetDate','prevMonth','nextMonth','user'));
+    }
+
+    public function export($id, Request $request)
+    {
+        $yearMonth = $request->input('year_month');
+        $targetDate = Carbon::parse($yearMonth . '-01');
+
+        $start = $targetDate->copy()->startOfMonth();
+        $end = $targetDate->copy()->endOfMonth();
+
+        $attendances = Attendance::where('user_id', $id)
+            ->whereBetween('date',[$start, $end])
+            ->with('breakTimes')
+            ->orderBy('date')
+            ->get();
+
+        $csvHeader = [
+            '日付', '出勤', '退勤', '休憩', '合計'
+        ];
+
+        return new StreamedResponse(function () use ($csvHeader, $attendances) {
+            $file = fopen('php://output', 'w');
+
+            $header = array_map(fn($v) => mb_convert_encoding($v, 'SJIS-win', 'UTF-8'),$csvHeader);
+
+            fputcsv($file,$csvHeader);
+
+            foreach ($attendances as $attendance) {
+  
+                // 休憩(存在しないところは空欄)
+                $breakHm = $attendance->break_total_hm;
+                $breakHm = ($breakHm === '00:00') ? '' : $breakHm;
+                
+                // 勤務時間の合計
+                $workMinutes = $attendance->work_minutes;
+                $workHm = $workMinutes ? sprintf('%02d:%02d', intdiv($workMinutes, 60), $workMinutes % 60) :'';
+
+                fputcsv($file, [
+                   $attendance->date->format('Y-m-d'),
+                   $attendance->work_start?->format('H:i') ?? '',
+                   $attendance->work_end?->format('H:i') ?? '',
+                   $breakHm,
+                   $workHm,
+                ]);
+            }
+
+            fclose($file);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment;filename="attendance.csv"',
+        ]);
     }
 }

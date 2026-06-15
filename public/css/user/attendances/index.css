@@ -160,6 +160,7 @@
     text-decoration: none;
     cursor: pointer;
 }
+
 .detail :hover,
 .detail :active,
 .detail :visited{

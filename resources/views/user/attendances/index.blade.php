@@ -42,6 +42,7 @@
                     <th class="attendance-label">合計</th>
                     <th class="attendance-label">詳細</th>
                 </tr>
+                
                 @foreach ($rows as $row)
                     <tr class="attendance-row">
                         <td class="attendance-data">

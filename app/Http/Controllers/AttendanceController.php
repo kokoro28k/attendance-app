@@ -159,6 +159,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $yearMonth = $request->input('year_month', Carbon::now()->format('Y-m'));
+
         $targetDate = Carbon::parse($yearMonth . '-01');
 
         $prevMonth = $targetDate->copy()->subMonth()->format('Y-m');
@@ -315,4 +316,6 @@ class AttendanceController extends Controller
 
         return redirect()->route('user.attendance.show', $attendance->id);
     }
+
+
 }

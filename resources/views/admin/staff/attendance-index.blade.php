@@ -12,7 +12,7 @@
             <div class="month-navigation">
                 <div class="month-navigation__before">
                     <span class="month-navigation__arrow">←</span>
-                    <a href="{{ route('staff.attendance', ['id' => $user->id, 'month' => $prevMonth]) }}"
+                    <a href="{{ route('staff.attendance', ['id' => $user->id, 'year_month' => $prevMonth]) }}"
                         class="month-button">前月
                     </a>
                 </div>
@@ -26,7 +26,7 @@
 
                 <div class="month-navigation__after">
                     <span class="month-navigation__arrow">→</span>
-                    <a href="{{ route('staff.attendance', ['id' => $user->id, 'month' => $nextMonth]) }}"
+                    <a href="{{ route('staff.attendance', ['id' => $user->id, 'year_month' => $nextMonth]) }}"
                         class="month-button">翌月
                     </a>
 
@@ -35,33 +35,47 @@
 
 
             {{-- 勤怠一覧テーブル --}}
-            <table class="attendace-table">
-                <tr class="attenfdance-row">
-                    <th class="attendance-label">日付</th>
-                    <th class="attendance-label">出勤</th>
-                    <th class="attendance-label">退勤</th>
-                    <th class="attendance-label">休憩</th>
-                    <th class="attendance-label">合計</th>
-                    <th class="attendance-label">詳細</th>
-                </tr>
-
-                @foreach ($rows as $row)
+            <div class="table-wrapper">
+                <table class="attendance-table">
                     <tr class="attendance-row">
-                        <td class="attendance-data">{{ $row['date']->format('m/d(D)') }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_start }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_end }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->break_total_hm }}</td>
-                        <td class="attendance-data">{{ optional($row['attendance'])->work_minutes }}</td>
-                        <td class="attendance-data__detail">
-                            <a class="detail"
-                                href="{{ route('staff.attendance', [
-                                    'user' => $user->id,
-                                    'date' => $row['date']->format('Y-m-d'),
-                                ]) }}">詳細</a>
-                        </td>
+                        <th class="attendance-label">日付</th>
+                        <th class="attendance-label">出勤</th>
+                        <th class="attendance-label">退勤</th>
+                        <th class="attendance-label">休憩</th>
+                        <th class="attendance-label">合計</th>
+                        <th class="attendance-label">詳細</th>
                     </tr>
-                @endforeach
-            </table>
+
+                    @foreach ($rows as $row)
+                        <tr class="attendance-row">
+                            <td class="attendance-data">{{ \Carbon\Carbon::parse($row['date'])->isoFormat('MM/DD(dd)') }}
+                            </td>
+                            <td class="attendance-data">
+                                {{ optional($row['attendance'])->work_start ? $row['attendance']->work_start->format('H:i') : '' }}
+                            </td>
+                            <td class="attendance-data">
+                                {{ optional($row['attendance'])->work_end ? $row['attendance']->work_end->format('H:i') : '' }}
+                            </td>
+                            <td class="attendance-data">
+                                {{ $row['attendance'] && $row['attendance']->work_start && $row['attendance']->work_end ? $row['attendance']->break_total_hm : '' }}
+                            </td>
+                            <td class="attendance-data">
+                                {{ $row['attendance'] && $row['attendance']->work_start && $row['attendance']->work_end ? \Carbon\CarbonInterval::minutes($row['attendance']->work_minutes)->cascade()->format('%H:%I') : '' }}
+                            </td>
+                            <td class="attendance-data__detail">
+                                <a class="detail"
+                                    href="{{ route('admin.attendance.show', [
+                                        'id' => $row['attendance_id'],
+                                    ]) }}">詳細</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+            <div class="csv-download">
+                <a class="csv-button"
+                    href="{{ route('staff.attendance.export', ['id' => $user->id, 'year_month' => $targetDate->format('Y-m')]) }}">CSV出力</a>
+            </div>
         </div>
     </div>
 @endsection

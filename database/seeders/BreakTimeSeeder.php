@@ -21,6 +21,12 @@ class BreakTimeSeeder extends Seeder
         $attendancesUser1 = Attendance::where('user_id',$user1->id)->get();
 
         foreach ($attendancesUser1 as $attendance) {
+
+            // 勤務していない日は休憩は作らない
+            if (is_null($attendance->work_start)){
+                continue;
+            }
+
             BreakTime::firstOrCreate(
             [
                 'attendance_id' => $attendance->id,
@@ -37,6 +43,11 @@ class BreakTimeSeeder extends Seeder
         $attendancesUser2 = Attendance::where('user_id', $user2->id)->get();
 
         foreach ($attendancesUser2 as $attendance) {
+
+            // 勤務していない日は休憩を作らない
+            if (is_null($attendance->work_start)){
+                continue;
+            }
             BreakTime::firstOrCreate(
             [
                 'attendance_id' => $attendance->id,

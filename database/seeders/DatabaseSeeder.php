@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             AttendanceSeeder::class,
-            BreakTimeSeeder::class
+            BreakTimeSeeder::class,
+            ApplicationSeeder::class
         ]);
     }
 }

@@ -63,36 +63,42 @@ class AttendanceSeeder extends Seeder
     private function generateMonth(Carbon $carbon, int $userId, string $pattern, Carbon $base)
     {
         $start = $carbon->copy()->startOfMonth();
-        $today = $base->copy()->subDay();
+        $yesterdayStr = $base->copy()->subDay()->format('Y-m-d');
 
-        for ($date = $start->copy(); $date->lte($today); $date->addDay()){
+        $date = $start->copy();
+        while ($date->format('Y-m-d') <= $yesterdayStr) {
+
+            $dayOfWeek = $date->dayOfWeekIso;
+            $workStart = null;
+            $workEnd = null;
+            $status = Attendance::STATUS_OFF;
+
             // 月曜日～金曜日だけ
-            if ($date->dayOfWeekIso > 5) continue;
-            if ($pattern === 'patternA') {
+            if ($pattern === 'patternA' && $dayOfWeek <=5) {
                 $workStart = '09:00:00';
                 $workEnd = '18:00:00';
-            }
-
-            // 月・水・金だけ勤務
-            if ($pattern === 'patternB') {
-                if ($date->dayOfWeekIso === 2 || $date->dayOfWeekIso === 4) {
-                    continue;
-                }
-                $workStart = '10:00:00';
-                $workEnd = '17:00:00';
+                $status = Attendance::STATUS_FINISHED;
             }
             
-            Attendance::updateOrCreate(
-            [
-                'user_id' => $userId,
-                'date' => $date->format('Y-m-d'),
-            ],
-            [
-                'work_start' => $workStart,
-                'work_end' => $workEnd,
-                'status' => Attendance::STATUS_FINISHED,
-            ]
-            );
+            // 月・水・金だけ勤務
+            if ($pattern === 'patternB' && in_array($dayOfWeek, [1,3,5])) {
+            
+                $workStart = '10:00:00';
+                $workEnd = '17:00:00';
+                $status = Attendance::STATUS_FINISHED;
+            }
+            
+                Attendance::updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'date' => $date->format('Y-m-d'),
+                ],
+                [
+                    'work_start' => $workStart,
+                    'work_end' => $workEnd,
+                    'status' => $status,
+                ]);
+            $date->addDay();
         }
 
         // 今日～月末の外枠を作る
@@ -107,7 +113,6 @@ class AttendanceSeeder extends Seeder
             'status' => Attendance::STATUS_OFF,
             ]);
         }
-
     }
 }
 

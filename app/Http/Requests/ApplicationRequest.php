@@ -23,8 +23,8 @@ class ApplicationRequest extends FormRequest
     {
         return [
             'attendance_id' => 'required|exists:attendances,id',
-            'corrected_work_start' => 'required|date_format:H:i',
-            'corrected_work_end' => 'required|date_format:H:i',
+            'corrected_work_start' => 'nullable|date_format:H:i',
+            'corrected_work_end' => 'nullable|date_format:H:i',
             'corrected_break_start.*' => 'nullable|date_format:H:i' ,
             'corrected_break_end.*' => 'nullable|date_format:H:i',
             'reason' => 'required|string|max:255'
@@ -41,31 +41,23 @@ class ApplicationRequest extends FormRequest
             $starts = $this->corrected_break_start ?? [];
             $ends   = $this->corrected_break_end ?? [];
 
-            // ① 出勤 > 退勤
-            if ($workStart && $workEnd && $workStart > $workEnd) {
-                $validator->errors()->add('corrected_work_start', '出勤時間もしくは退勤時間が不適切な値です');
-                return; // 休憩チェックはしない
-            }
-
-            // ② 休憩開始の範囲チェック
+            // 休憩開始の範囲チェック
             foreach ($starts as $i => $start) {
-                if ($start && ($start < $workStart || $start > $workEnd)) {
-                    $validator->errors()->add("corrected_break_start.$i", '休憩時間が不適切な値です');
-                }
-            }
 
-            // ③ 休憩終了の範囲チェック
-            foreach ($ends as $i => $end) {
-                $start = $starts[$i] ?? null;
+                $end = $ends[$i] ?? null;
 
-                // 休憩終了 < 休憩開始
-                if ($start && $end && $end < $start) {
-                    $validator->errors()->add("corrected_break_end.$i", '休憩時間もしくは退勤時間が不適切な値です');
-                }
+                // 休憩が入力されているときだけ
+                if ($start || $end){
+                    if (!$workStart || !$workEnd || $start < 
+                        $workStart || $start > $workEnd) {
+                        $validator->errors()->add("corrected_break_start.$i", '休憩時間が不適切な値です');
+                    }
 
-                // 退勤より後
-                if ($end && $end > $workEnd) {
-                    $validator->errors()->add("corrected_break_end.$i", '休憩時間もしくは退勤時間が不適切な値です');
+                    // 休憩終了 < 休憩開始  休憩終了 > 退勤
+                    if (!$workStart || !$workEnd || ($start &&   
+                        $end < $start) || $end > $workEnd) {
+                        $validator->errors()->add("corrected_break_end.$i", '休憩時間もしくは退勤時間が不適切な値です');
+                    }
                 }
             }
         });

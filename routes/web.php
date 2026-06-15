@@ -63,6 +63,10 @@ Route::middleware(['auth:admin','admin'])->group(function () {
     ])
         ->name('admin.attendance.update');
 
+    // CSV出力
+    Route::get('/admin/attendance/staff/{id}/export',[AdminAttendanceController::class,'export'])
+        ->name('staff.attendance.export');
+
 });
 
 // 一般ユーザー

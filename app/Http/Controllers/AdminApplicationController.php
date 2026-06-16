@@ -8,6 +8,7 @@ use App\Models\Application;
 
 class AdminApplicationController extends Controller
 {
+    // 申請一覧画面の表示
     public function index(Request $request)
     {
         $tab = $request->query('tab','pending');
@@ -15,20 +16,23 @@ class AdminApplicationController extends Controller
         $query = Application::with(['user','attendance']);
 
         if ($tab === 'pending') {
-            $query->where('status','pending')->orderBy('applied_at','asc');
+            $query->where('status', Application::STATUS_PENDING)->orderBy('applied_at','asc');
         } elseif ($tab === 'approved') {
-            $query->where('status','approved')->orderBy('applied_at','desc');
+            $query->where('status', Application::STATUS_APPROVED)->orderBy('applied_at','desc');
         }
 
-        $applications = $query->orderBy('user_id')->get();
+        $applications = $query->get();
 
         return view('admin.applications.index',compact('applications','tab'));
     }
 
-    public function showApprove($id)
+    // 修正承認画面の表示
+    public function showApprove($applicationId)
     {
-        $application = Application::with(['user','attendance','attendance.breakTimes','applicationBreaks'])->findOrFail($id);
+        $application = Application::with(['user','attendance','attendance.breakTimes','applicationBreaks'])->findOrFail($applicationId);
 
-        return view('admin.applications.approve',compact('application'));
+        $isPending = $application->status === Application::STATUS_PENDING;
+
+        return view('admin.applications.approve',compact('application', 'isPending'));
     }
 }

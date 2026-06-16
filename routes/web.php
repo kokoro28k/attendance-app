@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ApplicationRedirectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,14 +35,7 @@ Route::post('/admin/logout',[AdminLoginController::class,'destroy'])
 
 // 管理者ログイン済みのみアクセス可能
 Route::middleware(['auth:admin','admin'])->group(function () {
-    // 申請一覧画面
-    Route::get('/admin/stamp_correction_request/list',[AdminApplicationController::class,'index'])
-        ->name('admin.application.list');
-
-    // 修正申請承認
-    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'showApprove'])        
-        ->name('admin.application.approve.show');
-
+    
     // スタッフ一覧
     Route::get('/admin/staff/list',[AdminAttendanceController::class,'staffIndex'])
         ->name('staff.index');
@@ -67,6 +61,19 @@ Route::middleware(['auth:admin','admin'])->group(function () {
     Route::get('/admin/attendance/staff/{id}/export',[AdminAttendanceController::class,'export'])
         ->name('staff.attendance.export');
 
+    // 修正申請承認
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'showApprove'])        
+        ->name('admin.application.approve.show');    
+
+    // 承認ボタン
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}',[AdminApplicationController::class,'approve'])
+        ->name('admin.application.approve');
+});
+
+// 申請一覧画面
+Route::middleware(['auth:admin,web'])->group(function () {
+    Route::get('/stamp_correction_request/list',[ApplicationRedirectController::class,'index'])
+        ->name('application.list');
 });
 
 // 一般ユーザー
@@ -93,29 +100,32 @@ Route::middleware(['auth','user'])->group(function () {
     // 勤怠登録画面 出勤処理
     Route::post('/attendance/start',[AttendanceController::class,'start'])
         ->name('user.attendance.start');
-
+    
+    // 勤怠登録画面　退勤処理    
     Route::post('/attendance/end',[AttendanceController::class,'end'])
         ->name('user.attendance.end');
 
+    // 勤怠登録画面　休憩入り処理    
     Route::post('/attendance/break/start',[AttendanceController::class,'startBreak'])
         ->name('user.break.start');
 
+    // 勤怠登録画面　休憩戻り処理    
     Route::post('/attendance/break/end',[AttendanceController::class,'endBreak'])
         ->name('user.break.end');
 
-
+    // 修正申請
     Route::post('/applications',[AttendanceController::class,'store'])
         ->name('user.application.store');
 
+    // 勤怠一覧
     Route::get('/attendance/list',[AttendanceController::class,'index'])
         ->name('user.attendance.index');
 
+    // 勤怠詳細    
     Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])
         ->name('user.attendance.show');
 
-    Route::get('/stamp_correction_request/list',[ApplicationController::class,'index'])
-        ->name('user.application.index');
-
+    // ログアウト
     Route::post('/logout',[LoginController::class,'destroy'])
         ->name('logout');
 });

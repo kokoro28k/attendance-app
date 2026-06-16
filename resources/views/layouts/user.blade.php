@@ -21,17 +21,19 @@
             @if (Auth::check() && !request()->is('login') && !request()->is('register'))
                 <nav class="header-nav">
                     <ul>
-                        @if (!empty($attendance) && $attendance->status === \App\Models\Attendance::STATUS_FINISHED)
+                        @if (request()->routeIs('user.attendance.create') &&
+                                !empty($attendance) &&
+                                $attendance->status === \App\Models\Attendance::STATUS_FINISHED)
                             <li><a href="{{ route('user.attendance.index') }}">今月の出勤一覧</a>
                             </li>
-                            <li><a href="{{ route('user.application.index') }}">申請一覧</a>
+                            <li><a href="{{ route('application.list') }}">申請一覧</a>
                             </li>
                         @else
                             <li><a href="{{ route('user.attendance.create') }}">勤怠</a>
                             </li>
                             <li> <a href="{{ route('user.attendance.index') }}">勤怠一覧</a>
                             </li>
-                            <li><a href="{{ route('user.application.index') }}">申請</a>
+                            <li><a href="{{ route('application.list') }}">申請</a>
                             </li>
                         @endif
 

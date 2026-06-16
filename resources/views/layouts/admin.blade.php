@@ -17,14 +17,14 @@
                 <img src="{{ asset('images/COACHTECHヘッダーロゴ.png') }}" alt="COACHTECH">
             </div>
 
-            @if (Auth::guard('admin')->check())
+            @if (Auth::check() && Auth::user()->role === \App\Models\User::ROLE_ADMIN)
                 <nav class="header-nav">
                     <ul>
                         <li><a href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
                         </li>
                         <li> <a href="{{ route('staff.index') }}">スタッフ一覧</a>
                         </li>
-                        <li><a href="{{ route('admin.application.list') }}">申請一覧</a>
+                        <li><a href="{{ route('application.list') }}">申請一覧</a>
                         </li>
                         <li>
                             <form action="{{ route('admin.logout') }}" method="post">

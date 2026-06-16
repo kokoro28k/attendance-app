@@ -8,22 +8,22 @@
     <div class="application-approve">
         <div class="application-approve__inner">
             <h1 class="application-approve__heading">勤怠詳細</h1>
-            <form action="{{ route('admin.attendance.approve', $application->id) }}" method="post">
+            <form action="{{ route('admin.application.approve', $application->id) }}" method="post">
                 @csrf
 
                 <div class="table-wrapper">
                     <table class="detail-table">
                         <tr class="detail-row">
                             <th class="detail-label">名前</th>
-                            <td class="detail-data">{{ $application->user->name }}</td>
+                            <td class="detail-data name-text">{{ $application->user->name }}</td>
                         </tr>
                         <tr class="detail-row">
                             <th class="detail-label">日付</th>
                             <td class="detail-data">
                                 <div class="data-row">
-                                    <span class="date-row__year">{{ $year }}</span>
+                                    <span class="date-row__year">{{ $application->attendance->date->format('Y年') }}</span>
                                     <span class="date-row__day">
-                                        {{ $monthDay }}</span>
+                                        {{ $application->attendance->date->format('n月j日') }}</span>
                                 </div>
                             </td>
                         </tr>
@@ -40,43 +40,40 @@
                             </td>
                         </tr>
 
-                        <tr class="detail-row">
-                            @foreach ($application->applicationBreaks as $index => $break)
-                                <th class="detail-label">休憩{{ $index + 1 }}</th>
+
+                        @foreach ($application->applicationBreaks as $index => $break)
+                            <tr class="detail-row">
+                                <th class="detail-label">{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                                 <td class="detail-data">
                                     <div class="break-time">
                                         <span class="break_start">
                                             {{ optional($break->corrected_break_start)->format('H:i') }}</span>
                                         <span class="time-separator">～</span>
-                                        <span class="break_end">{{ optional($break->corrected_break_end)->format('H:i') }}>
-
+                                        <span class="break_end">{{ optional($break->corrected_break_end)->format('H:i') }}
+                                        </span>
                                     </div>
                                 </td>
-                        </tr>
+                            </tr>
                         @endforeach
-
-                        {{-- 空欄の休憩欄を1つ追加 --}}
-                        <tr class="detail-row">
-                            <th class="detail-label">休憩{{ $application->applicationBreaks->count() + 1 }}</th>
-                            <td></td>
-                        </tr>
 
                         <tr class="detail-row">
                             <th class="detail-label">備考</th>
-                            <td>
+                            <td class="detail-data detail-data--textarea">
                                 <textarea class="reason" name="reason">{{ $application->reason }}</textarea>
                             </td>
                         </tr>
                     </table>
                 </div>
-                @if ($isPending)
-                    <div class="button-wrapper">
-                        <button type="submit" class="application-button">承認</button>
-                    </div>
-                @else
-                    <div class="approve-button">
-                        <span class="approve-message">承認済み</span>
-                    </div>
-                @endif
+                <div class="button-wrapper">
+                    @if ($isPending)
+                        <button type="submit" class="approve-button">承認</button>
+                    @else
+                        <div class="approved-button">
+                            承認済み
+                        </div>
+                    @endif
+                </div>
             </form>
-        @endsection
+        </div>
+    </div>
+@endsection

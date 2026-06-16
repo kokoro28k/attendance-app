@@ -11,9 +11,9 @@
             <div class="border">
                 <ul class="tab-list">
                     <li class="tab-item {{ $tab === 'pending' ? 'active' : '' }}"><a
-                            href="{{ route('admin.application.list', ['tab' => 'pending']) }}">承認待ち</a></li>
+                            href="{{ route('application.list', ['tab' => 'pending']) }}">承認待ち</a></li>
                     <li class="tab-item {{ $tab === 'approved' ? 'active' : '' }}"><a
-                            href="{{ route('admin.application.list', ['tab' => 'approved']) }}">承認済み</a></li>
+                            href="{{ route('application.list', ['tab' => 'approved']) }}">承認済み</a></li>
                 </ul>
             </div>
             <div class="table-wrapper">
@@ -36,9 +36,9 @@
                                 <td class="application-data">{{ $application->user->name }}</td>
                                 <td class="application-data">{{ $application->attendance->date->format('Y/m/d') }}</td>
                                 <td class="application-data">{{ $application->reason }}</td>
-                                <td class="application-data">{{ $application->applied_at }}</td>
+                                <td class="application-data">{{ $application->applied_at->format('Y/m/d') }}</td>
                                 <td class="application-data"><a class="application-data__detail"
-                                        href="{{ route('admin.application.approve.show', ['id' => $application->id]) }}">詳細</a>
+                                        href="{{ route('admin.application.approve.show', ['attendance_correct_request_id' => $application->id]) }}">詳細</a>
                                 </td>
                             </tr>
                         @endforeach

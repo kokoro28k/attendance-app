@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Application;
 use App\Models\Attendance;
-use App\Models\ApplicationBreak;
-use App\Models\BreakTime;
 
 class ApplicationController extends Controller
 {
@@ -31,18 +29,8 @@ class ApplicationController extends Controller
     // 申請一覧画面の詳細ボタンの処理
     public function showAttendance($applicationId)
     {
-        // 途中までしか書いていない
         $application = Application::where('id',$applicationId)->where('user_id',auth()->id())->findOrFail();
 
         return redirect()->route('user.attendance.show',$application->attendance_id);
-
     }
-
-    public function approve()
-    {
-        $year = $attendace->date->format('Y年');
-        $monthDay =  $attendance->date->format('n月j日');
-    }
-
-
 }

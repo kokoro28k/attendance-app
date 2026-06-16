@@ -233,7 +233,8 @@ class AttendanceController extends Controller
         } else {
             // 通常の勤怠詳細
             $application = Application::where('attendance_id', $attendance->id)
-                ->latest()
+                ->orderByRaw("status = 'pending' DESC")
+                ->orderBy('id', 'desc' )
                 ->with('applicationBreaks')
                 ->first();
         }

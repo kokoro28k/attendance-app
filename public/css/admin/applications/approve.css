@@ -1,6 +1,7 @@
 .application-approve {
     background-color: #f0eff2;
     min-height: 100vh;
+    padding-bottom: 100px;
 }
 
 .application-approve__inner {
@@ -10,46 +11,97 @@
 }
 
 .application-approve__heading {
-    padding: 0 10px;
-    border-left: 5px solid #000;
+    padding-left: 20px;
+    padding-right: 0;
+    border-left: 8px solid #000;
+    width: 60%;
+    margin: 60px auto;
+    font-size: 36px;
+    text-align: left;
+    margin-left: 260px;
 }
 
 .detail-table {
-    margin-top: 16px;
+    margin: 40px auto 0;
     width: 100%;
+    max-width: 1000px;
     border-collapse: collapse;
-    border: 1px solid #b3b3b3;
+    border: none;;
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
+    padding-bottom: 100px;
 }
 
 .detail-row {
-    border: 1px solid #b3b3b3;
+    border: 2px solid #E1E1E1;
     padding: 20px;
     align-items: center;
+    border-left: none;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 60px;
 }
 
 .detail-label {
     color: #757575;
     font-size: 20px;
     font-weight: bold;
-    padding: 10px 0;
+    padding: 30px 0 30px 80px;
+    text-align: center;
+    letter-spacing: 2px;
+    width: 200px;
 }
 
 .detail-data {
     color: black;
     font-size: 20px;
     font-weight: bold;
+    text-align: left;
+    letter-spacing: 2px;
+    padding: 30px 0 30px 200px;
+}
+
+.attendance-time,
+.break-time{
+    display: flex;
+    gap:40px;
+}
+
+.name-text {
+    letter-spacing: 3px;
 }
 
 .data-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 120px;
+}
+
+.detail-row:first-child {
+    border-top: none;
+}
+
+.detail-row:last-child {
+    height: 140px;
+}
+
+.time-separator {
+    margin: 0 16px;
+}
+
+.detail-data--textarea {
+    padding-left: 30px 0 30px 40px;
 }
 
 .reason {
     font-size: 18px;
     font-weight: bold;
+    resize: none;
+    padding: 16px 0px;
+    width: 50%;
+    border: none;
+    margin: 0;
+    background-color: transparent;
 }
 
 .button-wrapper {
@@ -58,7 +110,7 @@
     margin-top: 30px;
 }
 
-.application-button {
+.approve-button {
     background-color: black;
     color: #fff;
     cursor: pointer;
@@ -67,18 +119,22 @@
     border-radius: 5px;
     padding: 10px 20px;
     display: block;
+    position: relative;
+    right: 260px;
+    width: 140px;
 }
 
-.approve-button{
+.approved-button{
     display: block;
     background-color: #696969;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
-}
-
-.approve-message{
+    position: relative;
+    right: 260px;
     font-size: 24px;
     color: #fff;
     font-weight: bold;
+    width: 140px;
 }
+

@@ -1,10 +1,11 @@
 .application-list{
     background-color: #f0eff2;
     min-height: 100vh;
+    padding-bottom: 80px;
 }
 
 .application-list__inner{
-    width: 80%;
+    width: 60%;
     margin: 0 auto;
     padding-top: 30px;
 }
@@ -12,10 +13,15 @@
 .application-heading{
     padding: 0 10px;
     border-left: 5px solid #000;
+    width: 60%;
+    margin-bottom: 60px;
+    margin-top: 60px;
+    font-size: 36px;
 }
 
 .border{
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
+    margin-bottom: 60px;
 }
 
 .tab-list{
@@ -35,7 +41,7 @@
     font-size: 20px;
 }
 
-.tab-item a:active{
+.tab-item.active a{
     font-weight: bold;
     color: black;
     text-decoration: none;
@@ -53,15 +59,30 @@
 }
 
 .application-table {
-    margin-top: 16px;
+    margin-top: 40px;
     width: 100%;
     border-collapse: collapse;
     border: none;
+    border-radius: 10px;
+    padding-bottom: 100px;
     background-color: #fff;
 }
 
+.application-table tbody .application-row {
+    border-top: 2px solid #E1E1E1;
+}
+
+.application-table thead .application-row {
+    border-top: none;
+    border-bottom: 4px solid #E1E1E1;
+}
+
 .application-row {
-    border: 1px solid #b3b3b3;
+    border: 2px solid #E1E1E1;
+    border-left: none;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 60px;
 }
 
 .application-label,
@@ -69,11 +90,25 @@
     color: #757575;
     font-size: 20px;
     font-weight: bold;
-    padding: 10px 0;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 3px;
 }
 
 .application-data__detail {
     color: black;
     font-size: 20px;
     font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.application-label:first-child {
+    border-top: none;
+}
+
+.application-data__detail :hover,
+.application-data__detail :active,
+.application-data__detail :visited {
+    color: black;
 }

@@ -41,6 +41,12 @@ class ApplicationRequest extends FormRequest
             $starts = $this->corrected_break_start ?? [];
             $ends   = $this->corrected_break_end ?? [];
 
+            // 出勤 > 退勤
+            if ($workStart && $workEnd && $workStart > $workEnd) {
+                $validator->errors()->add('corrected_work_start', '出勤時間もしくは退勤時間が不適切な値です');
+                return;
+            }
+
             // 休憩開始の範囲チェック
             foreach ($starts as $i => $start) {
 

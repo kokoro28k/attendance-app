@@ -35,4 +35,35 @@ class AdminApplicationController extends Controller
 
         return view('admin.applications.approve',compact('application', 'isPending'));
     }
+
+    public function approve($id)
+    {
+        $application = Application::with([
+            'attendance.breakTimes',
+            'applicationBreaks'
+        ])->findOrFail($id);
+
+        $application->status = Application::STATUS_APPROVED;
+        $application->save();
+
+        $attendance = $application->attendance;
+
+        $attendance->work_start = $application->corrected_work_start ?? $attendance->work_start;
+        $attendance->work_end = $application->corrected_work_end ?? $attendance->work_end;
+        $attendance->save();
+
+        foreach ($application->applicationBreaks as $index => $applicationBreak) {
+
+            // 元の休憩を順番に取得
+            $breakTime = $attendance->breakTimes[$index] ?? null;
+  
+            if ($breakTime) {
+                $breakTime->break_start = $applicationBreak->corrected_break_start ?? $breakTime->break_start;
+                $breakTime->break_end = $applicationBreak->corrected_break_end ?? $breakTime->break_end;
+                $breakTime->save();
+            }
+        }
+        return back();
+    }
+    
 }

@@ -37,7 +37,9 @@
 
                                     @if ($isPending)
                                         {{-- 承認待ちの場合、テキスト表示のみ --}}
-                                        <span>{{ $displayWorkStart }} ~ {{ $displayWorkEnd }}</span>
+                                        <span>{{ $displayWorkStart }}</span>
+                                        <span class="time-separator">～</span>
+                                        <span>{{ $displayWorkEnd }}</span>
                                     @else
                                         {{-- 通常は入力欄を表示 --}}
                                         <input type="time" name="work_start"
@@ -67,7 +69,9 @@
 
                                         @if ($isPending)
                                             {{-- 承認待ちの場合は、テキスト表示 --}}
-                                            <span>{{ $b['start'] }}~ {{ $b['end'] }}</span>
+                                            <span>{{ $b['start'] }}</span>
+                                            <span class="time-separator">～</span> 
+                                            <span>{{ $b['end'] }}</span>
                                         @else
                                             {{-- 通常は入力欄 --}}
                                             <input type="time" name="break_start[]"

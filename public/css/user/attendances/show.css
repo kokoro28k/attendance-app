@@ -65,6 +65,12 @@
     padding: 30px 0 30px 200px;
 }
 
+.attendance-time,
+.break-time {
+    display: flex;
+    gap: 40px;
+}
+
 .name-text{
     letter-spacing: 3px;
 }

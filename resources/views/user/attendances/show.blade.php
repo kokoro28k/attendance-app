@@ -10,7 +10,7 @@
             <h1 class="detail-heading">勤怠詳細</h1>
             <form action="{{ route('user.application.store') }}" method="post" autocomplete="off">
                 @csrf
-            
+
                 <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
                 <div class="table-wrapper">
@@ -36,7 +36,9 @@
 
                                     @if ($isPending)
                                         {{-- 承認待ちの場合、テキスト表示のみ --}}
-                                        <span>{{ $displayWorkStart }} ～ {{ $displayWorkEnd }}</span>
+                                        <span>{{ $displayWorkStart }}</span>
+                                        <span class="time-separator">～</span>
+                                        <span>{{ $displayWorkEnd }}</span>
                                     @else
                                         {{-- 通常は入力欄を表示 --}}
                                         <input type="time" name="corrected_work_start"
@@ -66,7 +68,8 @@
 
                                         @if ($isPending)
                                             {{-- 承認待ちの場合は、テキスト表示 --}}
-                                            <span>{{ $b['start'] }} ～ {{ $b['end'] }}</span>
+                                            <span>{{ $b['start'] }}</span> <span class="time-separator">～ </span>
+                                            <span>{{ $b['end'] }}</span>
                                         @else
                                             {{-- 通常は入力欄 --}}
                                             <input type="time" name="corrected_break_start[]"
@@ -92,7 +95,7 @@
                         @php
                             $emptyIndex = $attendance->breakTimes->count();
                         @endphp
-                        
+
                         @if (!$isPending)
                             <tr class="detail-row">
                                 <th class="detail-label"> {{ $emptyIndex === 0 ? '休憩' : '休憩' . ($emptyIndex + 1) }}</th>

@@ -27,14 +27,17 @@ class BreakTimeSeeder extends Seeder
                 continue;
             }
 
-            BreakTime::firstOrCreate(
+            $breakStart = $attendance->date->copy()->setTime(12, 0);
+            $breakEnd = $attendance->date->copy()->setTime(13, 0);
+
+            BreakTime::updateOrCreate(
             [
                 'attendance_id' => $attendance->id,
-                'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:00:00'),
+                'break_start' => $breakStart,
             ],
             [   
-                'break_end' => Carbon::parse        ($attendance->date->format('Y-m-d') . ' 13:00:00'),
-            ]
+                'break_end' => $breakEnd,
+            ]    
             );
         }
 
@@ -48,23 +51,30 @@ class BreakTimeSeeder extends Seeder
             if (is_null($attendance->work_start)){
                 continue;
             }
-            BreakTime::firstOrCreate(
+
+            $breakStart1 = $attendance->date->copy()->setTime(12, 0);
+            $breakEnd1 = $attendance->date->copy()->setTime(12, 30);
+
+            BreakTime::updateOrCreate(
             [
                 'attendance_id' => $attendance->id,
-                'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:00:00'),
-            ],
+                'break_start' => $breakStart1
+            ],    
             [  
-                'break_end' => Carbon::parse($attendance->date->format('Y-m-d') . ' 12:30:00')
+                'break_end' => $breakEnd1
             ]
             );
 
-            BreakTime::firstOrCreate(
+            $breakStart2 = $attendance->date->copy()->setTime(15, 0);
+            $breakEnd2 = $attendance->date->copy()->setTime(15, 30);
+
+            BreakTime::updateOrCreate(
             [
                 'attendance_id' => $attendance->id,
-                'break_start' => Carbon::parse($attendance->date->format('Y-m-d') . ' 15:00:00'),
+                'break_start' => $breakStart2
             ],
             [
-                'break_end' => Carbon::parse($attendance->date->format('Y-m-d') . ' 15:30:00')
+                'break_end' => $breakEnd2
             ]
             );
         }

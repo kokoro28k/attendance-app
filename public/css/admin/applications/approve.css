@@ -90,18 +90,21 @@
 }
 
 .detail-data--textarea {
-    padding-left: 30px 0 30px 40px;
+    padding-right:  40px;
+    display: flex;
+    align-items: center;
 }
 
 .reason {
     font-size: 18px;
     font-weight: bold;
     resize: none;
-    padding: 16px 0px;
+    padding: 24px 0px;
     width: 50%;
     border: none;
     margin: 0;
     background-color: transparent;
+    height: 70px;
 }
 
 .button-wrapper {

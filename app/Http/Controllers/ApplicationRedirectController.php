@@ -21,7 +21,6 @@ class ApplicationRedirectController extends Controller
         $this->userController = $userController;
     }
 
-
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -31,12 +30,12 @@ class ApplicationRedirectController extends Controller
             return redirect()->route('user.login');
         }
 
-        // 管理者ログイン中
+        // 管理者ログイン
         if ($user->role === User::ROLE_ADMIN) {
             return $this->adminController->index($request);
         }
 
-        // 一般ユーザー（webガード）
+        // 一般ユーザー
         if ($user->role === User::ROLE_USER) {
             return  $this->userController->index($request);
         }

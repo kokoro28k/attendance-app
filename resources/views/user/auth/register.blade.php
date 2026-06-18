@@ -8,7 +8,7 @@
     <div class="register-form">
         <h1 class="register-form__heading content__heading">会員登録</h1>
 
-        <form class="register-form__form" action="/register" method="post">
+        <form class="register-form__form" action="/register" method="post" novalidate>
             @csrf
 
             <div class="register-form__group">

@@ -64,9 +64,11 @@ class AttendanceSeeder extends Seeder
     {
         $start = $carbon->copy()->startOfMonth();
         $yesterdayStr = $base->copy()->subDay()->format('Y-m-d');
+        $endOfMonth = $carbon->copy()->endOfMonth();
 
         $date = $start->copy();
-        while ($date->format('Y-m-d') <= $yesterdayStr) {
+
+        while ($date->lte($endOfMonth) && $date->format('Y-m-d') <= $yesterdayStr) {
 
             $dayOfWeek = $date->dayOfWeekIso;
             $workStart = null;

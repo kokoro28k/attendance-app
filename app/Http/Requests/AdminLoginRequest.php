@@ -23,7 +23,7 @@ class AdminLoginRequest extends FormRequest
     {
         return [
             'email' => 'required|string|email',
-            'password' => 'required|min:8',
+            'password' => 'required',
         ];
     }
 
@@ -33,7 +33,6 @@ class AdminLoginRequest extends FormRequest
             'email.required' => 'メールアドレスを入力してください',
             'email.email' => 'メールアドレスはメール形式で入力してください',
             'password.required' => 'パスワードを入力してください',
-            'password.min' => 'パスワードは8文字以上で入力してください',
         ];
     }
 }

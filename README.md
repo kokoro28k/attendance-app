@@ -1,26 +1,25 @@
 ## Attendance-app (勤怠管理アプリ)
 
 # 環境構築  
-## Dockerビルド  
-1. リポジトリをクローンする  
-    ```bash
-    git clone git@github.com:kokoro28k/attendance-app.git
-    ```
+1. リポジトリをクローンする
+```bash
+git clone git@github.com:kokoro28k/attendance-app.git
+```
 
 2. DockerDesktopアプリを立ち上げる  
-    ```bash
-    ./vendor/bin/sail up -d
-    ```
+```bash
+./vendor/bin/sail up -d
+```
 
 3. Composerインストール  
-    ```bash
-    ./vendor/bin/sail composer install
-    ```  
+```bash
+./vendor/bin/sail composer install
+```  
 
 4. .envファイルを作成　　
-    ```bash
-    cp .env.example .env
-    ```
+```bash
+cp .env.example .env
+```
 
 .env ファイルは以下のように書き換えてください
 ```  
@@ -33,11 +32,14 @@ DB_PASSWORD=password
 ```
   
 5. APP_KEYの生成  
-    ```bash
-    ./vendor/bin/sail artisan key:generate
-    ```  
+```bash
+./vendor/bin/sail artisan key:generate
+```  
 
-6. MailTrapによるメール認証の設定  
+6. MailTrapによるメール認証の設定
+MailTrapは、以下のリンクから会員登録を行ってください。
+https://mailtrap.io/
+
 .env　ファイルを以下の内容に書き換えてください。  
 なお、USERNAME、PASSWORDは、MailTrapのSMTPを参照してください。
 
@@ -54,18 +56,18 @@ MAIL_FROM_NAME="Attendance App"
 
 設定後は、キャッシュをクリアしてください
 
-    ```bash
-    ./vendor/bin/sail artisan config:clear
-    ./vendor/bin/sail artisan cache:clear
-    ```
+```bash
+./vendor/bin/sail artisan config:clear
+./vendor/bin/sail artisan cache:clear
+```
 
 
-7. マイグレーションとシーディングの実行   
-    ```bash
-    ./vendor/bin/sail artisan migrate --seed
-    ```　　  
+7. マイグレーションとシーディングの実行
+```bash
+./vendor/bin/sail artisan migrate --seed
+```  
 
-## ログイン用ダミーユーザー  
+### ログイン用ダミーユーザー  
 - 管理者  
  email:admin@coachtech.com
  password:password  
@@ -78,11 +80,11 @@ MAIL_FROM_NAME="Attendance App"
  email:taro.y@coachtech.com  
  password:12345678
 
+  
 8. Laravelのスケジューラを有効にするためのcorn設定　　
-
-    ```bash
-    crontab -e　　
-    ```
+```bash
+crontab -e　　
+```
 
 開いたファイルに、以下の１行を追加してください
 
@@ -90,7 +92,9 @@ MAIL_FROM_NAME="Attendance App"
 -   -   -   -   - cd /path/to/project && ./vendor/bin/sail artisan schedule:run >> /dev/null 2>&1
 ```
 
-※ `/path/to/project` は、このプロジェクトを clone したディレクトリの絶対パスに置き換えてください。
+※ `/path/to/project` は、このプロジェクトを clone したディレクトリの絶対パスに置き換えてください。  
+
+
 
 ## 初回実行について
 
@@ -100,14 +104,25 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 そのため、初回のみ以下のコマンドを実行して  
 勤怠レコードを手動で作成してください。
 
-    ```bash
-    ./vendor/bin/sail artisan attendance:create-daily
-    ```
+```bash
+./vendor/bin/sail artisan attendance:create-daily
+```
 
 翌日以降は cron により毎日 0:00 に自動実行されます。
 
 # URL  
-- 開発環境
+- 開発環境  http://localhost/
+- phpMyAdmin  http://localhost:8080/
+
+# 使用技術  
+- PHP 8.1(FRM)
+- Laravel 10.x
+- MySQL 8.4
+- Docker/docker-compose
+- MailTrap
+
+# ER図  
+![ER図](er-diagram.attendance.png)
 
 ## テストファイル構成
 
@@ -175,6 +190,6 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 - メール認証機能
   
 以下のコマンドでテストを実行します
-    ```bash
-    ./vendor/bin/sail artisan test  
-    ```
+```bash
+./vendor/bin/sail artisan test  
+```

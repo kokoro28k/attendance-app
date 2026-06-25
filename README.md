@@ -115,7 +115,6 @@ crontab -e　　
 ※ `/path/to/project` は、このプロジェクトを clone したディレクトリの絶対パスに置き換えてください。  
 
 
-
 ## 初回実行について
 
 cron の設定を行った時点が 0:00 を過ぎている場合、  
@@ -131,8 +130,15 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 翌日以降は cron により毎日 0:00 に自動実行されます。
 
 # URL  
-- 開発環境  http://localhost/
-- phpMyAdmin  http://localhost:8080/
+## 開発環境
+### 一般ユーザー用　
+- ログイン: http://localhost/login
+- 新規登録: http://localhost/register
+
+### 管理者用  
+- ログイン: http://localhost/admin/login
+
+## phpMyAdmin  http://localhost:8080/
 
 # 使用技術  
 - PHP 8.1(FRM)

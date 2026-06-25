@@ -5,23 +5,24 @@
 ```bash
 git clone git@github.com:kokoro28k/attendance-app.git
 ```
-
-2. DockerDesktopアプリを立ち上げる  
+2. Laravel Sailのインストール  
 ```bash
-./vendor/bin/sail up -d
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
+    laravelsail/php82-composer:latest \
+    composer require laravel/sail --dev
+
 ```
 
-3. Composerインストール  
-```bash
-./vendor/bin/sail composer install
-```  
-
-4. .envファイルを作成　　
+3. .envファイルを作成　　
 ```bash
 cp .env.example .env
 ```
 
-.env ファイルは以下のように書き換えてください
+.env ファイルが以下の内容になっているか確認してください
 ```  
 DB_CONNECTION=mysql
 DB_HOST=mysql
@@ -30,7 +31,23 @@ DB_DATABASE=laravel
 DB_USERNAME=sail
 DB_PASSWORD=password
 ```
-  
+
+4. Sailの設定ファイルをパブリッシュ（MySQLを選択）
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
+    laravelsail/php82-composer:latest \
+    php artisan sail:install --with=mysql
+```
+
+5. DockerDesktopアプリを立ち上げる  
+```bash
+./vendor/bin/sail up -d
+```
+
 5. APP_KEYの生成  
 ```bash
 ./vendor/bin/sail artisan key:generate
@@ -60,7 +77,6 @@ MAIL_FROM_NAME="Attendance App"
 ./vendor/bin/sail artisan config:clear
 ./vendor/bin/sail artisan cache:clear
 ```
-
 
 7. マイグレーションとシーディングの実行
 ```bash

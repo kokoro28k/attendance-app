@@ -89,7 +89,7 @@ MAIL_FROM_NAME="Attendance App"
 
 ### ログイン用ダミーユーザー  
 - 管理者  
- email:admin@coachtech.com　　
+ email:admin@coachtech.com
  password:password  
 
 - ユーザー1 (西 怜奈)  

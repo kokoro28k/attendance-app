@@ -97,21 +97,6 @@ MAIL_FROM_NAME="Attendance App"
 ./vendor/bin/sail artisan migrate --seed
 ```
 
-### テスト環境の設定
-
-phpunit.xmlの設定が以下のようになっているか、確認してください。
-以下のようになっていない場合は、追加、修正をしてください。
-
-- 追加
-
-xml
-<env name="DB_CONNECTION" value="sqlite"/>
-
-- 修正　　
-
-xml
-<env name="DB_DATABASE" value=":memory:"/>
-
 ### ログイン用ダミーユーザー
 
 - 管理者  

@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\RegisterResponse;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -21,12 +22,10 @@ class RegisterController extends Controller
 
         $user = $creator->create($validated);
 
-        //event(new Registered($user));
+        event(new Registered($user));
 
         Auth::login($user);
 
-        //return redirect()->route('verification.notice');
-
-        return redirect()->route('user.attendance.create');
+        return redirect()->route('verification.notice');
     }
 }

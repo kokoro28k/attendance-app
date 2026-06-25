@@ -1,7 +1,8 @@
 .attendance-detail {
     background-color: #f0eff2;
-    min-height: 100vh;
+    width: 100%;
     padding-bottom: 100px;
+    flex-grow: 1;
 }
 
 .attendance-detail__inner {

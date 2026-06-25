@@ -1,6 +1,7 @@
 .application-approve {
     background-color: #f0eff2;
-    min-height: 100vh;
+    width: 100%;
+    flex-grow: 1;
     padding-bottom: 100px;
 }
 

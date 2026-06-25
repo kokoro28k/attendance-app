@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COACHTECH</title>
-    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     @yield('css')
 </head>
 
@@ -17,8 +17,8 @@
                 <img src="{{ asset('images/COACHTECHヘッダーロゴ.png') }}" alt="COACHTECH">
             </div>
 
-            {{-- 会員登録画面、ログイン画面はナビケーションバーを表示しない --}}
-            @if (Auth::check() && !request()->is('login') && !request()->is('register'))
+            {{-- 会員登録画面、ログイン画面、メール認証誘導画面はナビケーションバーを表示しない --}}
+            @if (Auth::check() && !request()->routeIs('user.login') && !request()->routeIs('user.register') && !request()->routeIs('verification.notice'))
                 <nav class="header-nav">
                     <ul>
                         @if (request()->routeIs('user.attendance.create') &&

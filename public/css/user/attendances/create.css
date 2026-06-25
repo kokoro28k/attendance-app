@@ -1,12 +1,16 @@
 .attendance-create{
     background-color: #f0eff2;
-    min-height: 100vh;
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .attendance-create__inner{
     max-width: 500px;
     margin: 0 auto;
-    padding-top: 150px;
+   
 }
 
 .attendance-status{

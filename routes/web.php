@@ -10,6 +10,8 @@ use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApplicationRedirectController;
+use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,43 +93,59 @@ Route::middleware('guest')->group(function () {
         ->name('login');
 });
 
+Route::get('/email/verify',function(){
+    return view('user.auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}',   
+    [VerifyEmailController::class, '__invoke'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+Route::post('/email/verification-notification', 
+    [EmailVerificationNotificationController::class, 'store'])
+        ->middleware(['throttle:6,1'])
+        ->name('verification.send');
+
 Route::middleware(['auth','user'])->group(function () {
-
-    // 勤怠登録画面
-    Route::get('/attendance',[AttendanceController::class,'create'])
-        ->name('user.attendance.create');
-
-    // 勤怠登録画面 出勤処理
-    Route::post('/attendance/start',[AttendanceController::class,'start'])
-        ->name('user.attendance.start');
-    
-    // 勤怠登録画面　退勤処理    
-    Route::post('/attendance/end',[AttendanceController::class,'end'])
-        ->name('user.attendance.end');
-
-    // 勤怠登録画面　休憩入り処理    
-    Route::post('/attendance/break/start',[AttendanceController::class,'startBreak'])
-        ->name('user.break.start');
-
-    // 勤怠登録画面　休憩戻り処理    
-    Route::post('/attendance/break/end',[AttendanceController::class,'endBreak'])
-        ->name('user.break.end');
-
-    // 修正申請
-    Route::post('/applications',[AttendanceController::class,'store'])
-        ->name('user.application.store');
-
-    // 勤怠一覧
-    Route::get('/attendance/list',[AttendanceController::class,'index'])
-        ->name('user.attendance.index');
-
-    // 勤怠詳細    
-    Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])
-        ->name('user.attendance.show');
 
     // ログアウト
     Route::post('/logout',[LoginController::class,'destroy'])
         ->name('logout');
+
+    Route::middleware('verified')->group(function () {
+
+        // 勤怠登録画面
+        Route::get('/attendance',[AttendanceController::class,'create'])
+            ->name('user.attendance.create');
+
+        // 勤怠登録画面 出勤処理
+        Route::post('/attendance/start',[AttendanceController::class,'start'])
+            ->name('user.attendance.start');
+    
+        // 勤怠登録画面　退勤処理    
+        Route::post('/attendance/end',[AttendanceController::class,'end'])
+            ->name('user.attendance.end');
+
+        // 勤怠登録画面　休憩入り処理    
+        Route::post('/attendance/break/start',[AttendanceController::class,'startBreak'])
+            ->name('user.break.start');
+
+        // 勤怠登録画面　休憩戻り処理    
+        Route::post('/attendance/break/end',[AttendanceController::class,'endBreak'])
+            ->name('user.break.end');
+
+        // 修正申請
+        Route::post('/applications',[AttendanceController::class,'store'])
+            ->name('user.application.store');
+
+        // 勤怠一覧
+        Route::get('/attendance/list',[AttendanceController::class,'index'])
+            ->name('user.attendance.index');
+
+        // 勤怠詳細    
+        Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])
+            ->name('user.attendance.show');
+    });
+
 });
-
-

@@ -129,9 +129,13 @@ class AdminAttendanceController extends Controller
     {
         $user = User::where('role', User::ROLE_USER)->findOrFail($id);
 
-        $yearMonth = $request->input('year_month', Carbon::now()->format('Y-m'));
+        $yearMonth = $request->input('year_month');
 
-        $targetDate = Carbon::parse($yearMonth . '-01');
+        if (!$yearMonth) {
+            $yearMonth = Carbon::now()->format('Y-m');
+        }
+
+        $targetDate = Carbon::createFromFormat('Y-m', $yearMonth);
 
         $prevMonth = $targetDate->copy()->subMonth()->format('Y-m');
         $nextMonth = $targetDate->copy()->addMonth()->format('Y-m');

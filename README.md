@@ -5,6 +5,10 @@
 ```bash
 git clone git@github.com:kokoro28k/attendance-app.git
 ```
+```bash
+cd attendance-app
+```
+
 2. Laravel Sailのインストール  
 ```bash
 docker run --rm \

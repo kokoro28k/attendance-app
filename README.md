@@ -92,7 +92,7 @@ MAIL_FROM_NAME="Attendance App"
  email:admin@coachtech.com
  password:password  
 
-- ユーザー1 (西 怜奈)
+- ユーザー1 (西 怜奈)  
  email:reina.n@coachtech.com  
  password:12345678  
 
@@ -138,7 +138,7 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 ### 管理者用  
 - ログイン: http://localhost/admin/login
 
-## phpMyAdmin  http://localhost:8080/
+### phpMyAdmin  http://localhost:8080/
 
 # 使用技術  
 - PHP 8.1(FRM)

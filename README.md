@@ -98,7 +98,6 @@ MAIL_FROM_NAME="Attendance App"
 
 phpunit.xmlを以下の内容を追加、修正してください。　
 
-　
 
 - 追加
 

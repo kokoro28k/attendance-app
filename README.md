@@ -31,7 +31,7 @@ docker run --rm \
 cp .env.example .env
 ```
 
-.env ファイルが以下の内容になっているか確認してください。
+.env ファイルを以下の内容に書き換えてください。
 
 ```
 DB_CONNECTION=mysql
@@ -87,24 +87,30 @@ MAIL_FROM_NAME="Attendance App"
 設定後は、キャッシュをクリアしてください。
 
 ```bash
-./vendor/bin/sail artisan config:clear  
+./vendor/bin/sail artisan config:clear
 ```
+
 ```bash
 ./vendor/bin/sail artisan cache:clear
-```  
+```
 
 ### テスト環境の設定　
+
 phpunit.xmlを以下の内容を追加、修正してください。　
+
 　
+
 - 追加
+
 ```xml
 <env name="DB_CONNECTION" value="sqlite"/>
-```   
+```
+
 - 修正
+
 ```xml
 <env name="DB_DATABASE" value=":memory:"/>
-``` 
-
+```
 
 7. マイグレーションとシーディングの実行
 

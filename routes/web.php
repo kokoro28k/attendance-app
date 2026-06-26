@@ -2,13 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminApplicationController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApplicationRedirectController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
@@ -37,7 +35,6 @@ Route::post('/admin/logout',[AdminLoginController::class,'destroy'])
 
 // 管理者ログイン済みのみアクセス可能
 Route::middleware(['auth:admin','admin'])->group(function () {
-    
     // スタッフ一覧
     Route::get('/admin/staff/list',[AdminAttendanceController::class,'staffIndex'])
         ->name('staff.index');
@@ -147,5 +144,4 @@ Route::middleware(['auth','user'])->group(function () {
         Route::get('/attendance/detail/{id}',[AttendanceController::class,'show'])
             ->name('user.attendance.show');
     });
-
 });

@@ -20,6 +20,5 @@ class CheckUser
         abort(403);
         }
         return $next($request);
-       
     }
 }

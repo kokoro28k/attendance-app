@@ -96,7 +96,7 @@ MAIL_FROM_NAME="Attendance App"
 
 ### テスト環境の設定　
 
-phpunit.xmlを以下の内容を追加、修正してください。　
+phpunit.xmlを以下の内容を追加、修正をしてください。　
 
 
 - 追加

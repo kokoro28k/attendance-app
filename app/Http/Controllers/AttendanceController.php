@@ -317,6 +317,4 @@ class AttendanceController extends Controller
 
         return redirect()->route('user.attendance.show', $attendance->id);
     }
-
-
 }

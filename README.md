@@ -98,7 +98,6 @@ MAIL_FROM_NAME="Attendance App"
 
 phpunit.xmlを以下の内容を追加、修正をしてください。　
 
-
 - 追加
 
 ```xml
@@ -140,7 +139,7 @@ crontab -e　　
 開いたファイルに、以下の１行を追加してください。
 
 ```
--   -   -   -   - cd /path/to/project && ./vendor/bin/sail artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /path/to/project && ./vendor/bin/sail artisan schedule:run >> /dev/null 2>&1
 ```
 
 ※ `/path/to/project` は、このプロジェクトを clone したディレクトリの絶対パスに置き換えてください。

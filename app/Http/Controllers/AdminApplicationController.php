@@ -65,5 +65,4 @@ class AdminApplicationController extends Controller
         }
         return back();
     }
-    
 }

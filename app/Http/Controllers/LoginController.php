@@ -34,5 +34,4 @@ class LoginController extends Controller
 
         return redirect()->route('user.login');
     }
-
 }

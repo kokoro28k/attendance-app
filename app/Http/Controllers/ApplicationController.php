@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Application;
-use App\Models\Attendance;
 
 class ApplicationController extends Controller
 {

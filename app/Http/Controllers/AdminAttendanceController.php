@@ -199,6 +199,9 @@ class AdminAttendanceController extends Controller
             ->orderBy('date')
             ->get();
 
+        $user = User::find($id);
+        $filename = "{$user->name}さんの勤怠リスト.csv";
+
         $csvHeader = [
             '日付', '出勤', '退勤', '休憩', '合計'
         ];
@@ -208,7 +211,7 @@ class AdminAttendanceController extends Controller
 
             $header = array_map(fn($v) => mb_convert_encoding($v, 'SJIS-win', 'UTF-8'),$csvHeader);
 
-            fputcsv($file,$csvHeader);
+            fputcsv($file,$header);
 
             foreach ($attendances as $attendance) {
   
@@ -220,19 +223,23 @@ class AdminAttendanceController extends Controller
                 $workMinutes = $attendance->work_minutes;
                 $workHm = $workMinutes ? sprintf('%02d:%02d', intdiv($workMinutes, 60), $workMinutes % 60) :'';
 
-                fputcsv($file, [
-                   $attendance->date->format('Y-m-d'),
-                   $attendance->work_start?->format('H:i') ?? '',
-                   $attendance->work_end?->format('H:i') ?? '',
-                   $breakHm,
-                   $workHm,
-                ]);
+                $row = [
+                    $attendance->date->format('Y-m-d'),
+                    $attendance->work_start?->format('H:i') ?? '',
+                    $attendance->work_end?->format('H:i') ?? '',
+                    $breakHm,
+                    $workHm,
+                ];
+
+                $row = array_map(fn($v) => mb_convert_encoding($v, 'SJIS-win', 'UTF-8'),$row);
+
+                fputcsv($file, $row);
             }
 
             fclose($file);
         }, 200, [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment;filename="attendance.csv"',
+            'Content-Disposition' => 'attachment;filename="' . $filename . '"',
         ]);
     }
 }

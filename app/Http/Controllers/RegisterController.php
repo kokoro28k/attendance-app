@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Contracts\RegisterResponse;
 use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller

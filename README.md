@@ -187,6 +187,72 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 - Docker/docker-compose
 - MailTrap
 
+# テーブル仕様
+
+## users テーブル
+
+| カラム名          | 型           | primary key | unique key | not null | foreign key |
+| ----------------- | ------------ | ----------- | ---------- | -------- | ----------- |
+| id                | bigint       | ○           |            | ○        |             |
+| name              | varchar(255) |             |            | ○        |             |
+| email             | varchar(255) |             | ○          | ○        |             |
+| email_verified_at | timestamp    |             |            |          |             |
+| password          | varchar(255) |             |            | ○        |             |
+| role              | varchar(255) |             |            | ○        |             |
+| created_at        | timestamp    |             |            |          |             |
+| updated_at        | timestamp    |             |            |          |             |
+
+## attendances テーブル
+
+| カラム名   | 型        | primary key | unique key | not null | foreign key |
+| ---------- | --------- | ----------- | ---------- | -------- | ----------- |
+| id         | bigint    | ○           |            | ○        |             |
+| user_id    | bigint    |             |            | ○        | users(id)   |
+| date       | date      |             |            | ○        |             |
+| work_start | time      |             |            |          |             |
+| work_end   | time      |             |            |          |             |
+| status     | integer   |             |            | ○        |             |
+| note       | text      |             |            |          |             |
+| created_at | timestamp |             |            |          |             |
+| updated_at | timestamp |             |            |          |             |
+
+## break_times テーブル
+
+| カラム名      | 型        | primary key | unique key | not null | foreign key     |
+| ------------- | --------- | ----------- | ---------- | -------- | --------------- |
+| id            | bigint    | ○           |            | ○        |                 |
+| attendance_id | bigint    |             |            | ○        | attendances(id) |
+| break_start   | time      |             |            |          |                 |
+| break_end     | time      |             |            |          |                 |
+| created_at    | timestamp |             |            |          |                 |
+| updated_at    | timestamp |             |            |          |                 |
+
+## applications テーブル
+
+| カラム名             | 型        | primary key | unique key | not null | foreign key     |
+| -------------------- | --------- | ----------- | ---------- | -------- | --------------- |
+| id                   | bigint    | ○           |            | ○        |                 |
+| attendance_id        | bigint    |             |            | ○        | attendances(id) |
+| user_id              | bigint    |             |            | ○        | users(id)       |
+| corrected_work_start | time      |             |            |          |                 |
+| corrected\_ work_end | time      |             |            |          |                 |
+| reason               | text      |             |            | ○        |                 |
+| status               | integer   |             |            | ○        |                 |
+| applied_at           | date      |             |            | ○        |                 |
+| created_at           | timestamp |             |            |          |                 |
+| updated_at           | timestamp |             |            |          |                 |
+
+## aplication_breaks テーブル
+
+| カラム名              | 型        | primary key | unique key | not null | foreign key      |
+| --------------------- | --------- | ----------- | ---------- | -------- | ---------------- |
+| id                    | bigint    | ○           |            | ○        |                  |
+| application_id        | bigint    |             |            | ○        | applications(id) |
+| corrected_break_start | time      |             |            |          |                  |
+| corrected_break_end   | time      |             |            |          |                  |
+| created_at            | timestamp |             |            |          |                  |
+| updated_at            | timestamp |             |            |          |                  |
+
 # ER図
 
 ![ER図](er-diagram.attendance.png)

@@ -29,6 +29,7 @@
     cursor: pointer;
     background-color: #d9d9d9;
     text-decoration: none;
+    color: black;
 }
 
 .verify-button:visited {

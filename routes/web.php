@@ -97,6 +97,10 @@ Route::get('/email/verify',function(){
     return view('user.auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
+Route::get('/email/verify-info', function () {
+    return view('user.auth.verify-info');
+})->middleware('auth')->name('verification.info');
+
 Route::get('/email/verify/{id}/{hash}',   
     [VerifyEmailController::class, '__invoke'])
         ->middleware(['signed', 'throttle:6,1'])

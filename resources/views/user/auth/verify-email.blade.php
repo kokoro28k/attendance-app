@@ -13,8 +13,8 @@
                 メール認証を完了してください。</p>
         </div>
 
-        <a class="verify-button" href="/email/verify">
-             認証はこちらから
+        <a class="verify-button" href="{{ route ('verification.info') }}">
+            認証はこちらから
         </a>
 
         <form class="verify-form__resend" method="post" action="{{route('verification.send')}}">

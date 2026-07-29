@@ -17,7 +17,7 @@
                 <img src="{{ asset('images/COACHTECHヘッダーロゴ.png') }}" alt="COACHTECH">
             </div>
 
-            {{-- 会員登録画面、ログイン画面、メール認証誘導画面、メール認証画面はナビケーションバーを表示しない --}}
+            {{-- 会員登録画面、ログイン画面、メール認証誘導画面、メール認証説明画面はナビケーションバーを表示しない --}}
             @if (Auth::check() && !request()->routeIs('user.login') && !request()->routeIs('user.register') && !request()->routeIs('verification.notice') && !request()->routeIs('verification.info'))
                 <nav class="header-nav">
                     <ul>

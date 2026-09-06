@@ -235,7 +235,7 @@ cron の設定を行った時点が 0:00 を過ぎている場合、
 | attendance_id        | bigint    |             |            | ○        | attendances(id) |
 | user_id              | bigint    |             |            | ○        | users(id)       |
 | corrected_work_start | time      |             |            |          |                 |
-| corrected\_ work_end | time      |             |            |          |                 |
+| corrected_ work_end | time      |             |            |          |                 |
 | reason               | text      |             |            | ○        |                 |
 | status               | integer   |             |            | ○        |                 |
 | applied_at           | date      |             |            | ○        |                 |

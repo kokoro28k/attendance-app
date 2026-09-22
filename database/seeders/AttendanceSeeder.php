@@ -15,7 +15,7 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        $base = Carbon::today();
+        $base = Carbon::now();
         $prev = $base->copy()->subMonth();
         $now = $base->copy();
 

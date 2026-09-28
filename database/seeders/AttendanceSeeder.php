@@ -19,7 +19,7 @@ class AttendanceSeeder extends Seeder
         $prev = $base->copy()->subMonth();
         $now = $base->copy();
 
-        //UsersSeederで作ったユーザー
+        //UserSeederで作ったユーザー
         $user1 = User::where('email','reina.n@coachtech.com')->first();
         $user2 = User::where('email','taro.y@coachtech.com')->first();
 

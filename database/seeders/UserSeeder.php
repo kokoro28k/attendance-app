@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             'role' => User::ROLE_ADMIN,
         ]);
 
+        // 一般ユーザーを作成
         $user1 = User::firstOrCreate([
             'name' => '西 怜奈',
             'email' => 'reina.n@coachtech.com',

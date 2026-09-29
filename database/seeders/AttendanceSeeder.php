@@ -75,7 +75,7 @@ class AttendanceSeeder extends Seeder
             $workEnd = null;
             $status = Attendance::STATUS_OFF;
 
-            // 月曜日～金曜日だけ
+            // 月曜日～金曜日に勤務
             if ($pattern === 'patternA' && $dayOfWeek <=5) {
                 $workStart = '09:00:00';
                 $workEnd = '18:00:00';
